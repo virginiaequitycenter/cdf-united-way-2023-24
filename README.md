@@ -99,7 +99,7 @@ After you've made changes to files in your local repo, push those changes to the
             - Icon looks like this: <img src="https://raw.githubusercontent.com/virginiaequitycenter/cville-equity-atlas/main/docs/images/terminal-icon.png" height="30">
             - Open application looks similar to this: 
             
-                <img src="images/terminal-view.png" width="400">
+                <img src="https://raw.githubusercontent.com/virginiaequitycenter/cville-equity-atlas/main/docs/images/terminal-view.png" width="400">
 
     - **For Windows users:** 
         - Install Git:
