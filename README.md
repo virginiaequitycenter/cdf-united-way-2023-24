@@ -1,4 +1,4 @@
-# Community Data Fellows
+# United Way Project - Community Data Fellows 2023-24
 Project work and resources for Equity Center Community Data Fellows
 
 
