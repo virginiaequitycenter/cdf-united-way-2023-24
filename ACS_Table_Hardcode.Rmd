@@ -3,6 +3,9 @@ title: "ACS Table Pipeline"
 author: "United Way Team"
 date: "2024-02-18"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -19,74 +22,77 @@ census_api <- Sys.getenv("CENSUS_API_KEY")
 
 ## Step 1: Determining Variables of Interest
 
-We begin by determining the variables we are interested in pulling data, the following list is the variables and their respective sub-categories, we want to pull from the ACS.
+We begin by determining the variables we are interested in pulling data,
+the following list is the variables and their respective sub-categories,
+we want to pull from the ACS.
 
-- DP05: Race and Ethnicity %
-  - DP05_0038P: Black/AA
-  - DP05_0039P: American Indian/Alaska Native
-  - DP05_0044P: Asian
-  - DP05_0052P: Native Hawaiian/Pacific Islander
-  - DP05_0071P: Hispanic/Latino (any race)
-  - DP05_0077P: White alone (not Hispanic/Latino)
-  - DP05_0033P: All
-- S0901: Race and Ethnicity of Children %
-  - S0901_C01_007: Black/AA
-  - S0901_C01_008: American Indian/Alaska Native
-  - S0901_C01_009: Asian
-  - S0901_C01_010: Native Hawaiian/Pacific Islander
-  - S0901_C01_013: Hispanic/Latino (any race)
-  - S0901_C01_014: White alone (not Hispanic/Latino)
-  - S0901_C01_001: All
-- S1701: Poverty Rates
-  - S1701_C02_014: Black/AA
-  - S1701_C02_015: American Indian/Alaska Native
-  - S1701_C02_016: Asian
-  - S1701_C02_017: Native Hawaiian/Pacific Islander
-  - S1701_C02_020: Hispanic/Latino (any race)
-  - S1701_C02_021: White alone (not Hispanic/Latino)
-  - S1701_C02_001: All
-- S1903: Median Household Income
-  - S1903_C03_003: Black/AA
-  - S1903_C03_004: American Indian/Alaska Native
-  - S1903_C03_005: Asian
-  - S1903_C03_006: Native Hawaiian/Pacific Islander
-  - S1903_C03_009: Hispanic/Latino (any race)
-  - S1903_C03_010: White alone (not Hispanic/Latino)
-  - S1903_C03_001: All
-- S2701: Without Health Insurance %
-  - S2701_C03_017: Black/AA
-  - S2701_C03_018: American Indian/Alaska Native
-  - S2701_C03_019: Asian
-  - S2701_C03_020: Native Hawaiian/Pacific Islander
-  - S2701_C03_023: Hispanic/Latino (any race)
-  - S2701_C03_024: White alone (not Hispanic/Latino)
-  - S2701_C03_001: All
-- C27001 & B18135: Children without Health Insurance %
-  - C27001B_004: Black/AA
-  - C27001C_004: American Indian/Alaska Native
-  - C27001D_004: Asian
-  - C27001E_004: Native Hawaiian/Pacific Islander
-  - C27001I_004: Hispanic/Latino (any race)
-  - C27001H_004: White alone (not Hispanic/Latino)
-  - : All
-- S2301: Unemployment Rate %
-  - S2301_C04_013: Black/AA
-  - S2301_C04_014: American Indian/Alaska Native
-  - S2301_C04_015: Asian
-  - S2301_C04_016: Native Hawaiian/Pacific Islander
-  - S2301_C04_019: Hispanic/Latino (any race)
-  - S2301_C04_020: White alone (not Hispanic/Latino)
-  - S2301_C04_001: All
-- S2502: Homeownership % 
-  - S2502_C02_003: Black/AA
-  - S2502_C02_004: American Indian/Alaska Native
-  - S2502_C02_005: Asian
-  - S2502_C02_006: Native Hawaiian/Pacific Islander
-  - S2502_C02_009: Hispanic/Latino (any race)
-  - S2502_C02_010: White alone (not Hispanic/Latino)
-  - S2502_C02_001: All
+-   DP05: Race and Ethnicity %
+    -   DP05_0038P: Black/AA
+    -   DP05_0039P: American Indian/Alaska Native
+    -   DP05_0044P: Asian
+    -   DP05_0052P: Native Hawaiian/Pacific Islander
+    -   DP05_0071P: Hispanic/Latino (any race)
+    -   DP05_0077P: White alone (not Hispanic/Latino)
+    -   DP05_0033P: All
+-   S0901: Race and Ethnicity of Children %
+    -   S0901_C01_007: Black/AA
+    -   S0901_C01_008: American Indian/Alaska Native
+    -   S0901_C01_009: Asian
+    -   S0901_C01_010: Native Hawaiian/Pacific Islander
+    -   S0901_C01_013: Hispanic/Latino (any race)
+    -   S0901_C01_014: White alone (not Hispanic/Latino)
+    -   S0901_C01_001: All
+-   S1701: Poverty Rates
+    -   S1701_C02_014: Black/AA
+    -   S1701_C02_015: American Indian/Alaska Native
+    -   S1701_C02_016: Asian
+    -   S1701_C02_017: Native Hawaiian/Pacific Islander
+    -   S1701_C02_020: Hispanic/Latino (any race)
+    -   S1701_C02_021: White alone (not Hispanic/Latino)
+    -   S1701_C02_001: All
+-   S1903: Median Household Income
+    -   S1903_C03_003: Black/AA
+    -   S1903_C03_004: American Indian/Alaska Native
+    -   S1903_C03_005: Asian
+    -   S1903_C03_006: Native Hawaiian/Pacific Islander
+    -   S1903_C03_009: Hispanic/Latino (any race)
+    -   S1903_C03_010: White alone (not Hispanic/Latino)
+    -   S1903_C03_001: All
+-   S2701: Without Health Insurance %
+    -   S2701_C03_017: Black/AA
+    -   S2701_C03_018: American Indian/Alaska Native
+    -   S2701_C03_019: Asian
+    -   S2701_C03_020: Native Hawaiian/Pacific Islander
+    -   S2701_C03_023: Hispanic/Latino (any race)
+    -   S2701_C03_024: White alone (not Hispanic/Latino)
+    -   S2701_C03_001: All
+-   C27001 & B18135: Children without Health Insurance %
+    -   C27001B_004: Black/AA
+    -   C27001C_004: American Indian/Alaska Native
+    -   C27001D_004: Asian
+    -   C27001E_004: Native Hawaiian/Pacific Islander
+    -   C27001I_004: Hispanic/Latino (any race)
+    -   C27001H_004: White alone (not Hispanic/Latino)
+    -   : All
+-   S2301: Unemployment Rate %
+    -   S2301_C04_013: Black/AA
+    -   S2301_C04_014: American Indian/Alaska Native
+    -   S2301_C04_015: Asian
+    -   S2301_C04_016: Native Hawaiian/Pacific Islander
+    -   S2301_C04_019: Hispanic/Latino (any race)
+    -   S2301_C04_020: White alone (not Hispanic/Latino)
+    -   S2301_C04_001: All
+-   S2502: Homeownership %
+    -   S2502_C02_003: Black/AA
+    -   S2502_C02_004: American Indian/Alaska Native
+    -   S2502_C02_005: Asian
+    -   S2502_C02_006: Native Hawaiian/Pacific Islander
+    -   S2502_C02_009: Hispanic/Latino (any race)
+    -   S2502_C02_010: White alone (not Hispanic/Latino)
+    -   S2502_C02_001: All
 
-We can create vector lists of these variables, we can then pull the variables from the table containing all the metadata:
+We can create vector lists of these variables, we can then pull the
+variables from the table containing all the metadata:
 
 ```{r}
 # Create vector of variables of interest
@@ -162,10 +168,10 @@ var_of_interest <- list(
 # Create function to get all metadata in single file
 all_acs_meta <- function(){
   # Gets the list of all variables from all acs5 metadata tables
-  vars1 <- load_variables(2021, "acs5") %>% select(-geography) # Remove the geography column
-  vars2 <- load_variables(2021, "acs5/profile")
-  vars3 <- load_variables(2021, "acs5/subject")
-  vars4 <- load_variables(2021, "acs5/cprofile")
+  vars1 <- load_variables(2022, "acs5") %>% select(-geography) # Remove the geography column
+  vars2 <- load_variables(2022, "acs5/profile")
+  vars3 <- load_variables(2022, "acs5/subject")
+  vars4 <- load_variables(2022, "acs5/cprofile")
   
   # Provides column with specific lookup
   vars1$dataset_table <- "acs5"
@@ -183,8 +189,8 @@ all_acs_meta <- function(){
 metadata_var <- all_acs_meta()
 ```
 
-
-Next, we create a table of the metadata for the variables, we will join to this list after we pull in the data using the API:
+Next, we create a table of the metadata for the variables, we will join
+to this list after we pull in the data using the API:
 
 ```{r}
 # Filters for only the rows containing the variable codes we are interested in
@@ -199,24 +205,23 @@ We can print the output of the table below:
 kable(var_table)
 ```
 
-
-
 ## Step 2: Acquire Data from Census Bureau Tables
 
-Next we want to take each variable and pull it for all of our locations and years:
+Next we want to take each variable and pull it for all of our locations
+and years:
 
-Once again, we should determine our regions and years.
-- Our years of interest can be input as a simple vector list
-- Our regions of interest can be input as a 3-column table.
-  1. Name of the region
-  2. Code for the region (three-digit FIPS county code)
-  3. Combined region grouping (counties that share a region have the same group value)
-    - Greater Charlottesville Area (GCA): Albemarle, Charlottesville, Fluvanna, Greene, Louisa, Nelson
-    - Staunton/Augusta/Waynesboro (SAW): Staunton, Augusta, Waynesboro
+Once again, we should determine our regions and years. - Our years of
+interest can be input as a simple vector list - Our regions of interest
+can be input as a 3-column table. 1. Name of the region 2. Code for the
+region (three-digit FIPS county code) 3. Combined region grouping
+(counties that share a region have the same group value) - Greater
+Charlottesville Area (GCA): Albemarle, Charlottesville, Fluvanna,
+Greene, Louisa, Nelson - Staunton/Augusta/Waynesboro (SAW): Staunton,
+Augusta, Waynesboro
 
 ```{r}
 # Create list of years
-yr_of_interest <- c(2019, 2020)
+yr_of_interest <- c(2022)
 
 # Create list of county names
 Name = c("Albemarle", "Charlottesville", "Fluvanna", "Greene", "Louisa", "Nelson", "Staunton", "Augusta", "Waynesboro",
@@ -234,7 +239,8 @@ Group = c(rep("GCA", 6), rep("SAW", 3), "Harrisonburg", "Buckingham", "Orange", 
 region_of_interest <- tibble(Name, Code, Group)
 ```
 
-Then, we can use the `get_acs()` function from the `tidycensus` package to pull all these variables for each of these localitites and years:
+Then, we can use the `get_acs()` function from the `tidycensus` package
+to pull all these variables for each of these localitites and years:
 
 ```{r}
 # Pulls from census API using tidycensus
@@ -242,13 +248,14 @@ pulled_data <- get_acs(geography = "county",
         variables = names(var_of_interest), # Variables list provided in the all_acs5_data function wrapping this one
         state = "51", # Virginia code
         county = Code, 
-        year = 2019, 
+        year = 2022, 
         survey = "acs5",
         output = "wide",
         key = census_api) # API key provided in the all_acs5_data function
 ```
 
-From here we can link the rows representing county regions with our datframe from earlier:
+From here we can link the rows representing county regions with our
+datframe from earlier:
 
 ```{r}
 # Adds 51 to beginning of every 3-digit FIPS code to match with the pulled data
@@ -261,7 +268,8 @@ pulled_data_full <- merge(x=region_of_interest[,2:3], y=pulled_data, by.x = "Cod
 colnames(pulled_data_full)[1:3] <- c("GEOID", "Group", "Region")
 ```
 
-Now we take the column names and give them readable labels instead of codes:
+Now we take the column names and give them readable labels instead of
+codes:
 
 ```{r}
 # Create list of the old column names
@@ -271,9 +279,6 @@ new_col_names <- c(paste0(unname(unlist(var_of_interest)), "E"), paste0(unname(u
 
 pulled_data_full <- data.table::setnames(pulled_data_full, old = old_col_names, new = new_col_names, skip_absent = T)
 ```
-
-
-
 
 ## Step 3: Aggregating Table Data for Combined Regions
 
@@ -286,5 +291,3 @@ pulled_data_full_agg2 <- pulled_data_full %>%
   summarise(across(ends_with("E"), ~sum(.)),
             across(ends_with("M"), ~moe_sum(., estimate=sub(".$", "E", .))))
 ```
-
-
