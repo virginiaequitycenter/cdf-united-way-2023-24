@@ -113,7 +113,8 @@ write.csv(acs_data_DP05_summarize, paste0(as.character(year), "-", name, "-DP05.
 ###################################################
 #### Race and Ethnicity of Children % -- S0901 ####
 ###################################################
-# These tables only have percents - will need to calculate counts then combine and create percent for combined counties
+# These tables only have percents - 
+# We should search for the corresponding B Table with count values - cannot accutately aggregate with just percents 
 var_S0901 <- list(
   "RaceEthnicChild_%_Black" = "S0901_C01_007", # Black/AA
   "RaceEthnicChild_%_AmerIndian" = "S0901_C01_008", # American Indian/Alaska Native
@@ -206,40 +207,7 @@ write.csv(acs_data_S1701_summarize, paste0(as.character(year), "-", name, "-S170
 ##########################################
 #### Median Household Income -- S1903 ####
 ##########################################
-# Dollar amount - need to average over combined counties- NO SUMMARY_VAR 
-var_S1903 <- list(
-  "MedianHouseIncome_Black" = "S1903_C03_003", # Black/AA
-  "MedianHouseIncome_AmerIndian" = "S1903_C03_004", # American Indian/Alaska Native
-  "MedianHouseIncome_Asian" = "S1903_C03_005", # Asian
-  "MedianHouseIncome_PacifIslan" = "S1903_C03_006", # Native Hawaiian/Pacific Islander
-  "MedianHouseIncome_HispanLatin" = "S1903_C03_009", # Hispanic/Latino (any race)
-  "MedianHouseIncome_White" = "S1903_C03_010", # White alone (not Hispanic/Latino)
-  "MedianHouseIncome_All" = "S1903_C03_001" # All
-) 
-
-# Get ACS data
-acs_data_mhhi <- get_acs(geography = "county",
-                         state = "VA",
-                         county = county_codes,
-                         variables = var_S1903,
-                         year = year, 
-                         survey = "acs5",
-                         key = census_api) 
-
-# Create summary variables for the combined counties
-acs_data_mhhi_summarize <- acs_data_mhhi %>% 
-  group_by(variable) %>% 
-  summarize(value = mean(estimate)) %>% 
-  mutate(name = name) %>% 
-  select(name, variable, value)
-
-# Pivot table (if desired)
-# acs_data_mhhi_summarize <- acs_data_mhhi_summarize %>% 
-#   pivot_wider(names_from = variable, values_from = value)
-
-# Save table as csv
-write.csv(acs_data_mhhi_summarize, paste0(as.character(year), "-Charlottesville-Albermarle-S1903.csv"), row.names=FALSE)
-
+## Needs more complex computations for accurate combined values
 
 ####################################################
 #### Without Health Insurance -- S2701 -- counts ####
@@ -290,13 +258,12 @@ write.csv(acs_data_S2701_summarize, paste0(as.character(year), "-", name, "-S270
 ###################################
 
 # If tables are long (no pivot_wider)
-acs_data_combined <- rbind(acs_data_DP05_summarize, acs_data_S0901_summarize, acs_data_S1701_summarize, acs_data_mhhi_summarize, acs_data_S2701_summarize)
+acs_data_combined <- rbind(acs_data_DP05_summarize, acs_data_S0901_summarize, acs_data_S1701_summarize, acs_data_S2701_summarize)
 
 # If tables are wide (yes pivot_wider)
 # acs_data_combined <- acs_data_DP05_summarize %>% 
 #   left_join(acs_data_S0901_summarize) %>% 
-#   left_join(acs_data_S1701_summarize) %>% 
-#   left_join(acs_data_mhhi_summarize) %>% 
+#   left_join(acs_data_S1701_summarize) %>%
 #   left_join(acs_data_S2701_summarize)
   
 # Save table as csv
