@@ -270,54 +270,6 @@ pop_child_race <- pop_child_race %>%
 # Save table as csv
 write.csv(pop_child_race, paste0(as.character(year), "-", name, "-B01001.csv"), row.names=FALSE)
 
-###################################################
-#### Race and Ethnicity of Children % -- S0901 ####
-###################################################
-# These tables only have percents - 
-# We should search for the corresponding B Table with count values - cannot accutately aggregate with just percents 
-var_S0901 <- list(
-  "RaceEthnicChild_%_Black" = "S0901_C01_007", # Black/AA
-  "RaceEthnicChild_%_AmerIndian" = "S0901_C01_008", # American Indian/Alaska Native
-  "RaceEthnicChild_%_Asian" = "S0901_C01_009", # Asian
-  "RaceEthnicChild_%_PacifIslan" = "S0901_C01_010", # Native Hawaiian/Pacific Islander
-  "RaceEthnicChild_%_HispanLatin" = "S0901_C01_013", # Hispanic/Latino (any race)
-  "RaceEthnicChild_%_White" = "S0901_C01_014" # White alone (not Hispanic/Latino)
-)
-
-# Get ACS data
-acs_data_S0901 <- get_acs(geography = "county",
-                    state = "VA",
-                    county = county_codes,
-                    variables = var_S0901,
-                    summary_var = "S0901_C01_001", # this provides the total (summary table) we need for creating percents
-                    year = year, 
-                    survey = "acs5",
-                    key = census_api) 
-
-# When tables have PERCENTS use below
-acs_data_S0901_summarize <- acs_data_S0901 %>% 
-  mutate(estimate_count = (estimate / 100) * summary_est,
-         moe_count = (moe / 100) * summary_est)
-
-# Create summary variables for the combined counties
-acs_data_S0901_summarize <- acs_data_S0901_summarize %>% 
-  group_by(variable) %>% 
-  summarize(sum_est = sum(estimate_count),
-            sum_moe = moe_sum(moe = moe_count, estimate = estimate_count),
-            sum_all = sum(summary_est))
-
-# Create percentages from estimates
-acs_data_S0901_summarize <- acs_data_S0901_summarize %>% 
-  mutate(value = round(((sum_est / sum_all) * 100), digits = 2),
-         name = name) %>% 
-  select(name, variable, value)
-
-# Pivot table (if desired)
-# acs_data_S0901_summarize <- acs_data_S0901_summarize %>% 
-#   pivot_wider(names_from = variable, values_from = value)
-
-# Save table as csv
-write.csv(acs_data_S0901_summarize, paste0(as.character(year), "-", name, "-S0901.csv"), row.names=FALSE)
 
 ################################
 #### Poverty Rates -- S1701 ####
@@ -418,11 +370,10 @@ write.csv(acs_data_S2701_summarize, paste0(as.character(year), "-", name, "-S270
 ###################################
 
 # If tables are long (no pivot_wider)
-acs_data_combined <- rbind(acs_data_DP05_summarize, acs_data_S0901_summarize, acs_data_S1701_summarize, acs_data_S2701_summarize)
+acs_data_combined <- rbind(acs_data_DP05_summarize, acs_data_S1701_summarize, acs_data_S2701_summarize)
 
 # If tables are wide (yes pivot_wider)
 # acs_data_combined <- acs_data_DP05_summarize %>% 
-#   left_join(acs_data_S0901_summarize) %>% 
 #   left_join(acs_data_S1701_summarize) %>%
 #   left_join(acs_data_S2701_summarize)
   
