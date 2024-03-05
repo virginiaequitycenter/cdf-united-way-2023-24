@@ -41,30 +41,30 @@ county_codes <- c("003", "540") # county FIPS codes desired
 name <- "Charlottesville-Albermarle" # name of county or combined region
 
 # Variable view helper
-# all_acs_meta <- function(){
-#   # Gets the list of all variables from all acs5 metadata tables
-#   vars1 <- load_variables(year, "acs5") %>% select(-geography) # Remove the geography column
-#   vars2 <- load_variables(year, "acs5/profile")
-#   vars3 <- load_variables(year, "acs5/subject")
-#   vars4 <- load_variables(year, "acs5/cprofile")
-#   
-#   # Provides column with specific lookup
-#   vars1$dataset_table <- "acs5"
-#   vars2$dataset_table  <- "acs5/profile"
-#   vars3$dataset_table  <- "acs5/subject"
-#   vars4$dataset_table  <- "acs5/cprofile"
-#   
-#   # Combine all table rows
-#   all_vars_meta <- rbind(vars1, vars2, vars3, vars4)
-#   
-#   return(all_vars_meta)
-# }
-# 
-# # Pull all variable names from metadata
-# metadata_var <- all_acs_meta()
-# 
-# # View acs metadata tables
-# view(metadata_var)
+all_acs_meta <- function(){
+  # Gets the list of all variables from all acs5 metadata tables
+  vars1 <- load_variables(year, "acs5") %>% select(-geography) # Remove the geography column
+  vars2 <- load_variables(year, "acs5/profile")
+  vars3 <- load_variables(year, "acs5/subject")
+  vars4 <- load_variables(year, "acs5/cprofile")
+
+  # Provides column with specific lookup
+  vars1$dataset_table <- "acs5"
+  vars2$dataset_table  <- "acs5/profile"
+  vars3$dataset_table  <- "acs5/subject"
+  vars4$dataset_table  <- "acs5/cprofile"
+
+  # Combine all table rows
+  all_vars_meta <- rbind(vars1, vars2, vars3, vars4)
+
+  return(all_vars_meta)
+}
+
+# Pull all variable names from metadata
+metadata_var <- all_acs_meta()
+
+# View acs metadata tables
+view(metadata_var)
 
 ####################################
 #### Race and Ethnicity -- DP05 ####
@@ -109,6 +109,166 @@ acs_data_DP05_summarize <- acs_data_DP05_summarize %>%
 
 # Save table as csv
 write.csv(acs_data_DP05_summarize, paste0(as.character(year), "-", name, "-DP05.csv"), row.names=FALSE)
+
+###################################################
+#### Race and Ethnicity of Children % -- B01001A-I tables ####
+###################################################
+# Using American Community Survey, 5-year estimates
+# Table B01001
+# American Community Survey table B01001A-I "Sex by Age, by Race"
+# https://www.socialexplorer.com/data/ACS2022_5yr/metadata/?ds=ACS22_5yr&table=B01001A
+
+## black ----
+vars_B01001B <- c(popm_u5 = "B01001B_003", 
+          popm_5to9 = "B01001B_004", 
+          popm_10to14 = "B01001B_005",
+          popm_15to17 = "B01001B_006",
+          popf_u5 = "B01001B_018", 
+          popf_5to9 = "B01001B_019", 
+          popf_10to14 = "B01001B_020",
+          popf_15to17 = "B01001B_021")
+
+pop_child_black <- get_acs(geography = "county",
+                           state = "51",
+                           county = county_codes,
+                           var = vars_B01001B,
+                           year = year,
+                           survey = "acs5")
+
+pop_child_black <- pop_child_black %>% 
+  group_by(GEOID, NAME) %>% 
+  summarize(sum_est = sum(estimate),
+            sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
+  mutate(race_ethn = "black")
+
+# American Indian/Alaska Native
+vars_B01001C <- c(popm_u5 = "B01001C_003", 
+          popm_5to9 = "B01001C_004", 
+          popm_10to14 = "B01001C_005",
+          popm_15to17 = "B01001C_006",
+          popf_u5 = "B01001C_018", 
+          popf_5to9 = "B01001C_019", 
+          popf_10to14 = "B01001C_020",
+          popf_15to17 = "B01001C_021")
+
+pop_child_aian <- get_acs(geography = "county",
+                          state = "51",
+                          county = county_codes,
+                          var = vars_B01001C,
+                          year = year,
+                          survey = "acs5")
+
+pop_child_aian <- pop_child_aian %>% 
+  group_by(GEOID, NAME) %>% 
+  summarize(sum_est = sum(estimate),
+            sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
+  mutate(race_ethn = "aian")
+
+# Asian
+vars_B01001D <- c(popm_u5 = "B01001D_003", 
+          popm_5to9 = "B01001D_004", 
+          popm_10to14 = "B01001D_005",
+          popm_15to17 = "B01001D_006",
+          popf_u5 = "B01001D_018", 
+          popf_5to9 = "B01001D_019", 
+          popf_10to14 = "B01001D_020",
+          popf_15to17 = "B01001D_021")
+
+pop_child_asian <- get_acs(geography = "county",
+                           state = "51",
+                           county = county_codes,
+                           var = vars_B01001D,
+                           year = year,
+                           survey = "acs5")
+
+pop_child_asian <- pop_child_asian %>% 
+  group_by(GEOID, NAME) %>% 
+  summarize(sum_est = sum(estimate),
+            sum_moe = moe_sum(moe = moe, estimate = estimate)) %>%
+  mutate(race_ethn = "asian")
+
+# Native Hawaiian/Pacific Islander
+vars_B01001E <- c(popm_u5 = "B01001E_003", 
+          popm_5to9 = "B01001E_004", 
+          popm_10to14 = "B01001E_005",
+          popm_15to17 = "B01001E_006",
+          popf_u5 = "B01001E_018", 
+          popf_5to9 = "B01001E_019", 
+          popf_10to14 = "B01001E_020",
+          popf_15to17 = "B01001E_021")
+
+pop_child_nhpi <- get_acs(geography = "county",
+                          state = "51",
+                          county = county_codes,
+                          var = vars_B01001E,
+                          year = year,
+                          survey = "acs5")
+
+pop_child_nhpi <- pop_child_nhpi %>% 
+  group_by(GEOID, NAME) %>% 
+  summarize(sum_est = sum(estimate),
+            sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
+  mutate(race_ethn = "nhpi")
+
+# Hispanic/Latino (any race)
+vars_B01001I <- c(popm_u5 = "B01001I_003", 
+          popm_5to9 = "B01001I_004", 
+          popm_10to14 = "B01001I_005",
+          popm_15to17 = "B01001I_006",
+          popf_u5 = "B01001I_018", 
+          popf_5to9 = "B01001I_019", 
+          popf_10to14 = "B01001I_020",
+          popf_15to17 = "B01001I_021")
+
+pop_child_hisp <- get_acs(geography = "county",
+                          state = "51",
+                          county = county_codes,
+                          var = vars_B01001I,
+                          year = year,
+                          survey = "acs5")
+
+pop_child_hisp <- pop_child_hisp %>% 
+  group_by(GEOID, NAME) %>% 
+  summarize(sum_est = sum(estimate),
+            sum_moe = moe_sum(moe = moe, estimate = estimate)) %>%  
+  mutate(race_ethn = "hisp")
+
+# White alone (not Hispanic/Latino)
+vars_B01001H <- c(popm_u5 = "B01001H_003", 
+          popm_5to9 = "B01001H_004", 
+          popm_10to14 = "B01001H_005",
+          popm_15to17 = "B01001H_006",
+          popf_u5 = "B01001H_018", 
+          popf_5to9 = "B01001H_019", 
+          popf_10to14 = "B01001H_020",
+          popf_15to17 = "B01001H_021")
+
+pop_child_nhwhite <- get_acs(geography = "county",
+                             state = "51",
+                             county = county_codes,
+                             var = vars_B01001H,
+                             year = year,
+                             survey = "acs5")
+
+pop_child_nhwhite <- pop_child_nhwhite %>% 
+  group_by(GEOID, NAME) %>% 
+  summarize(sum_est = sum(estimate),
+            sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
+  mutate(race_ethn = "white_nh")
+
+# Combine child_pop_race ----
+pop_child_race <- bind_rows(pop_child_black, pop_child_aian, 
+                            pop_child_asian, pop_child_nhpi, 
+                            pop_child_hisp, pop_child_nhwhite) 
+
+pop_child_race <- pop_child_race %>% 
+  group_by(GEOID, NAME) %>% 
+  mutate(total_count = sum(sum_est)) %>% 
+  ungroup() %>% 
+  mutate(percent = round(((sum_est / total_count) * 100), digits = 2))
+
+# Save table as csv
+write.csv(pop_child_race, paste0(as.character(year), "-", name, "-B01001.csv"), row.names=FALSE)
 
 ###################################################
 #### Race and Ethnicity of Children % -- S0901 ####
