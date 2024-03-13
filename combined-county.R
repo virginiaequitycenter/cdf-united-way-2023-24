@@ -366,6 +366,29 @@ acs_data_S2701_summarize <- acs_data_S2701_summarize %>%
 # Save table as csv
 write.csv(acs_data_S2701_summarize, paste0(as.character(year), "-", name, "-S2701.csv"), row.names=FALSE)
 
+####################################################
+#### Children Without Health Insurance -- B27001 ####
+####################################################
+# Use tables B27001A-I tables for age/race
+# https://censusreporter.org/tables/B27001/
+# This process will be similar to "Race and Ethnicity of Children % -- B01001A-I tables" above 
+# These are ACS 1-yr surveys, will need to adjust get_acs()
+
+####################################################
+#### Unemployment Rate % -- B23002 ####
+####################################################
+# Use tables B23002A-I tables for age/race
+# https://censusreporter.org/tables/B23002A/
+# This process will be similar to "Race and Ethnicity of Children % -- B01001A-I tables" above 
+# These are ACS 1-yr surveys, will need to adjust get_acs()
+
+####################################################
+#### Homeownership % -- S2502 ####
+####################################################
+# process is similar to "Race and Ethnicity" and "Poverty Rates" above
+# be sure to use count estimates to derive percents, for Owner-occupied housing unit
+  
+
 ###################################
 #### Combine tables if desired ####
 ###################################
