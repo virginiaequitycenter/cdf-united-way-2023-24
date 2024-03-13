@@ -37,8 +37,8 @@ census_api <- Sys.getenv("CENSUS_API_KEY")
 year <- 2022
 
 # County FIP codes and name
-county_codes <- c("003", "540") # county FIPS codes desired
-name <- "Charlottesville-Albermarle" # name of county or combined region
+county_codes <- c("003", "540") # locality FIPS codes desired
+name <- "Charlottesville-Albermarle" # name of locality or combined region
 
 # Variable view helper
 all_acs_meta <- function(){
@@ -89,8 +89,8 @@ acs_data_DP05 <- get_acs(geography = "county",
                     survey = "acs5",
                     key = census_api) 
 
-# When tables have COUNTS use below
 # Create summary variables for the combined counties
+# Run for single locality, will lead to no changes in the data table
 acs_data_DP05_summarize <- acs_data_DP05 %>% 
   group_by(variable) %>% 
   summarize(sum_est = sum(estimate),
@@ -102,10 +102,6 @@ acs_data_DP05_summarize <- acs_data_DP05_summarize %>%
   mutate(value = round(((sum_est / sum_all) * 100), digits = 2),
          name = name) %>% 
   select(name, variable, value)
-
-# Pivot table (if desired)
-# acs_data_DP05_summarize <- acs_data_DP05_summarize %>% 
-#   pivot_wider(names_from = variable, values_from = value)
 
 # Save table as csv
 write.csv(acs_data_DP05_summarize, paste0(as.character(year), "-", name, "-DP05.csv"), row.names=FALSE)
@@ -119,14 +115,14 @@ write.csv(acs_data_DP05_summarize, paste0(as.character(year), "-", name, "-DP05.
 # https://www.socialexplorer.com/data/ACS2022_5yr/metadata/?ds=ACS22_5yr&table=B01001A
 
 ## black ----
-vars_B01001B <- c(popm_u5 = "B01001B_003", 
-          popm_5to9 = "B01001B_004", 
-          popm_10to14 = "B01001B_005",
-          popm_15to17 = "B01001B_006",
-          popf_u5 = "B01001B_018", 
-          popf_5to9 = "B01001B_019", 
-          popf_10to14 = "B01001B_020",
-          popf_15to17 = "B01001B_021")
+vars_B01001B <- c(popm_u5 = "B01001B_003", # Male under 5yrs
+          popm_5to9 = "B01001B_004", # Male ages 5 to 9yrs
+          popm_10to14 = "B01001B_005", # Male ages 10 to 14yrs
+          popm_15to17 = "B01001B_006", # Male ages 15 to 17yrs
+          popf_u5 = "B01001B_018", # Female under 5yrs
+          popf_5to9 = "B01001B_019", # Female ages 5 to 9
+          popf_10to14 = "B01001B_020", # Female ages 10 to 14yrs
+          popf_15to17 = "B01001B_021") # Female ages 15 to 17yrs
 
 pop_child_black <- get_acs(geography = "county",
                            state = "51",
@@ -139,7 +135,7 @@ pop_child_black <- pop_child_black %>%
   group_by(GEOID, NAME) %>% 
   summarize(sum_est = sum(estimate),
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
-  mutate(race_ethn = "black")
+  mutate(race_ethn = "black_u18")
 
 # American Indian/Alaska Native
 vars_B01001C <- c(popm_u5 = "B01001C_003", 
@@ -162,7 +158,7 @@ pop_child_aian <- pop_child_aian %>%
   group_by(GEOID, NAME) %>% 
   summarize(sum_est = sum(estimate),
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
-  mutate(race_ethn = "aian")
+  mutate(race_ethn = "aian_u18")
 
 # Asian
 vars_B01001D <- c(popm_u5 = "B01001D_003", 
@@ -185,7 +181,7 @@ pop_child_asian <- pop_child_asian %>%
   group_by(GEOID, NAME) %>% 
   summarize(sum_est = sum(estimate),
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>%
-  mutate(race_ethn = "asian")
+  mutate(race_ethn = "asian_u18")
 
 # Native Hawaiian/Pacific Islander
 vars_B01001E <- c(popm_u5 = "B01001E_003", 
@@ -208,7 +204,7 @@ pop_child_nhpi <- pop_child_nhpi %>%
   group_by(GEOID, NAME) %>% 
   summarize(sum_est = sum(estimate),
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
-  mutate(race_ethn = "nhpi")
+  mutate(race_ethn = "nhpi_u18")
 
 # Hispanic/Latino (any race)
 vars_B01001I <- c(popm_u5 = "B01001I_003", 
@@ -231,7 +227,7 @@ pop_child_hisp <- pop_child_hisp %>%
   group_by(GEOID, NAME) %>% 
   summarize(sum_est = sum(estimate),
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>%  
-  mutate(race_ethn = "hisp")
+  mutate(race_ethn = "hisp_u18")
 
 # White alone (not Hispanic/Latino)
 vars_B01001H <- c(popm_u5 = "B01001H_003", 
@@ -254,7 +250,7 @@ pop_child_nhwhite <- pop_child_nhwhite %>%
   group_by(GEOID, NAME) %>% 
   summarize(sum_est = sum(estimate),
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
-  mutate(race_ethn = "white_nh")
+  mutate(race_ethn = "white_nh_u18")
 
 # Combine child_pop_race ----
 pop_child_race <- bind_rows(pop_child_black, pop_child_aian, 
@@ -263,18 +259,31 @@ pop_child_race <- bind_rows(pop_child_black, pop_child_aian,
 
 pop_child_race <- pop_child_race %>% 
   group_by(GEOID, NAME) %>% 
-  mutate(total_count = sum(sum_est)) %>% 
-  ungroup() %>% 
-  mutate(percent = round(((sum_est / total_count) * 100), digits = 2))
+  mutate(total_count = sum(sum_est))
+
+# Create summary variables for the combined counties
+# Run for single locality, will lead to no changes in the data table
+pop_child_race_summarize <- pop_child_race %>% 
+  group_by(race_ethn) %>% 
+  summarize(sum_est = sum(sum_est),
+            sum_moe = moe_sum(moe = sum_moe, estimate = sum_est),
+            sum_all = sum(total_count))
+
+# Create percentages from estimates
+pop_child_race_summarize <- pop_child_race_summarize %>% 
+  mutate(value = round(((sum_est / sum_all) * 100), digits = 2),
+         name = name,
+         variable = race_ethn) %>% 
+  select(name, variable, value)
 
 # Save table as csv
-write.csv(pop_child_race, paste0(as.character(year), "-", name, "-B01001.csv"), row.names=FALSE)
+write.csv(pop_child_race_summarize, paste0(as.character(year), "-", name, "-B01001.csv"), row.names=FALSE)
 
 
 ################################
 #### Poverty Rates -- S1701 ####
 ################################
-# these variables are counts
+
 var_S1701 <- list(
   "Poverty_%_Black" = "S1701_C02_014", # Black/AA
   "Poverty_%_AmerIndian" = "S1701_C02_015", # American Indian/Alaska Native
@@ -295,8 +304,8 @@ acs_data_S1701 <- get_acs(geography = "county",
                     survey = "acs5",
                     key = census_api) 
 
-# When tables have COUNTS use below
 # Create summary variables for the combined counties
+# Run for single locality, will lead to no changes in the data table
 acs_data_S1701_summarize <- acs_data_S1701 %>% 
   group_by(variable) %>% 
   summarize(sum_est = sum(estimate),
@@ -309,10 +318,6 @@ acs_data_S1701_summarize <- acs_data_S1701_summarize %>%
          name = name) %>% 
   select(name, variable, value)
 
-# Pivot table (if desired)
-# acs_data_S1701_summarize <- acs_data_S1701_summarize %>% 
-#   pivot_wider(names_from = variable, values_from = value)
-
 # Save table as csv
 write.csv(acs_data_S1701_summarize, paste0(as.character(year), "-", name, "-S1701.csv"), row.names=FALSE)
 
@@ -320,6 +325,7 @@ write.csv(acs_data_S1701_summarize, paste0(as.character(year), "-", name, "-S170
 #### Median Household Income -- S1903 ####
 ##########################################
 ## Needs more complex computations for accurate combined values
+## WILL SKIP FOR NOW
 
 ####################################################
 #### Without Health Insurance -- S2701 -- counts ####
@@ -343,8 +349,8 @@ acs_data_S2701 <- get_acs(geography = "county",
                     survey = "acs5",
                     key = census_api) 
 
-# When tables have COUNTS use below
 # Create summary variables for the combined counties
+# Run for single locality, will lead to no changes in the data table
 acs_data_S2701_summarize <- acs_data_S2701 %>% 
   group_by(variable) %>% 
   summarize(sum_est = sum(estimate),
@@ -357,25 +363,15 @@ acs_data_S2701_summarize <- acs_data_S2701_summarize %>%
          name = name) %>% 
   select(name, variable, value)
 
-# Pivot table (if desired)
-# acs_data_S2701_summarize <- acs_S2701_data_summarize %>% 
-#   pivot_wider(names_from = variable, values_from = value)
-
 # Save table as csv
 write.csv(acs_data_S2701_summarize, paste0(as.character(year), "-", name, "-S2701.csv"), row.names=FALSE)
-
 
 ###################################
 #### Combine tables if desired ####
 ###################################
 
-# If tables are long (no pivot_wider)
-acs_data_combined <- rbind(acs_data_DP05_summarize, acs_data_S1701_summarize, acs_data_S2701_summarize)
-
-# If tables are wide (yes pivot_wider)
-# acs_data_combined <- acs_data_DP05_summarize %>% 
-#   left_join(acs_data_S1701_summarize) %>%
-#   left_join(acs_data_S2701_summarize)
+# If tables are long
+acs_data_combined <- rbind(acs_data_DP05_summarize, pop_child_race_summarize, acs_data_S1701_summarize, acs_data_S2701_summarize)
   
 # Save table as csv
 write.csv(acs_data_combined, paste0(as.character(year), "-", "acs-data-combined.csv"), row.names=FALSE)
