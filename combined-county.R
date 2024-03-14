@@ -257,6 +257,7 @@ pop_child_race <- bind_rows(pop_child_black, pop_child_aian,
                             pop_child_asian, pop_child_nhpi, 
                             pop_child_hisp, pop_child_nhwhite) 
 
+# Need to be reconsidered (See totals from B01001 tables)
 pop_child_race <- pop_child_race %>% 
   group_by(GEOID, NAME) %>% 
   mutate(total_count = sum(sum_est))
