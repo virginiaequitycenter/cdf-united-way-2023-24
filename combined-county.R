@@ -374,13 +374,17 @@ write.csv(acs_data_S2701_summarize, paste0(as.character(year), "-", name, "-S270
 # This process will be similar to "Race and Ethnicity of Children % -- B01001A-I tables" above 
 # These are ACS 1-yr surveys, will need to adjust get_acs()
 
+# Variable view helper for ACS 1-year surveys
+acs_var <- load_variables(year, "acs1", cache = TRUE)
+view(acs_var)
+
 ####################################################
 #### Unemployment Rate % -- B23002 ####
 ####################################################
 # Use tables B23002A-I tables for age/race
 # https://censusreporter.org/tables/B23002A/
 # This process will be similar to "Race and Ethnicity of Children % -- B01001A-I tables" above 
-# These are ACS 1-yr surveys, will need to adjust get_acs()
+# These are ACS 1-yr surveys, will need to adjust get_acs() (see above)
 
 ####################################################
 #### Homeownership % -- S2502 ####
