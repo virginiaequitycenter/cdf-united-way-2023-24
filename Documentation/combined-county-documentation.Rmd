@@ -1,0 +1,215 @@
+---
+title: "Pulling and Organizing Census ACS Data"
+author: "United Way & Equity Center Team"
+date: "2024-03-18"
+output: html_document
+---
+
+```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = FALSE)
+library(tidyverse)
+library(kableExtra)
+```
+
+## Background
+
+Here, we provide some background information useful for a novice or first-time user of Census Data.
+
+### US Census Bureau
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/U.S._Census_Bureau_logo_post-2011.svg/2560px-U.S._Census_Bureau_logo_post-2011.svg.png" alt="US Census Bureau Logo" style="width:50%;"/>
+
+The US Census Bureau provides current data on America’s people, places, and economy. Their mission is to serve as the nation’s leading provider of quality data about its people and economy. The Census Bureau works to honor privacy, protect confidentiality, share their expertise globally, and conduct their work openly. [^1]
+
+[^1]: <https://www.census.gov/about/what/census-at-a-glance.html>
+
+### The American Community Survey (ACS)
+
+This documentation will focus on the **American Community Survey (ACS)**, an ongoing annual survey that shows what the U.S. population looks like and how it lives.[^2] The ACS is a tool that can help communities decide where to target services and resources by helping them understand the changes happening in their communities. It is an important source of detailed population and housing information.
+
+[^2]: <https://www.census.gov/programs-surveys/acs.html>
+
+::: {style="text-align:center;"}
+<img src="https://www.census.gov/content/dam/Census/gs-imports/social-media-sharing-images/social-image-acs.png" alt="The US Census ACS" style="width:75%; float:right; margin:0 10px 10px 0;"/>
+:::
+
+The ACS releases new data each year in the form of estimates. These estimates are presented in a variety of tables, tools, and analytical reports. The ACS data can be accessed through the Census Bureau’s platform, data.census.gov. The ACS has 1-year [^3] and 5-year estimates of the data [^4]. It is important to consider currency and sample size/reliability/precision in choosing which dataset to use. The table “Distinguishing features of ACS 1-year, 1-year supplemental, 3-year, and 5-year estimates” [^5] summarizes details, research implications, and examples to help guide data users.
+
+[^3]: <https://www.census.gov/data/developers/data-sets/acs-1year.html>
+
+[^4]: <https://www.census.gov/data/developers/data-sets/acs-5year.html>
+
+[^5]: <https://www.census.gov/programs-surveys/acs/guidance/estimates.html>
+
+> For the purposes of this documentation, we will focus on accessing ACS 5-year estimates.
+
+## First Steps
+
+### Introduction to R and R-Studio
+
+::: {style="display: flex;"}
+::: {style="flex: 50%; padding: 10px;"}
+<img src="https://www.r-project.org/logo/Rlogo.png" alt="R Logo" style="width: 50%;"/>
+:::
+
+::: {style="flex: 50%; padding: 10px;"}
+<img src="https://www.rstudio.com/wp-content/uploads/2018/10/RStudio-Logo-Flat.png" alt="RStudio Logo" style="width: 100%;"/>
+:::
+:::
+
+**R** is a programming language and software environment for statistical computing and graphics. It serves as a integrated suite of software facilities for data manipulation, calculation and graphical display, including effective data handling, operators for calculations on arrays/matrices,a collection of intermediate data analysis tools. R is an effective programming language widely used among statisticians and data miners for data analysis and developing statistical software. More information about R and links for installation can be found at at their website. [^6]
+
+[^6]: <https://www.r-project.org/>
+
+**RStudio** is an integrated development environment (IDE) for R [^7]. IDEs are developer environments that provide better tools and UI for working in R. It provides a user-friendly interface to work with R, making it easier to write and run R code, view plots and charts, manage files, and more.
+
+[^7]: <https://posit.co/download/rstudio-desktop/>
+
+> Both must be installed if this is the first time you are working with R, there are numerous guides walking you through the process [^8][^9].If you already have R/RStudio installed, you can skip this section.
+
+[^8]: <https://rstudio-education.github.io/hopr/starting.html>
+
+[^9]: <https://www.stat.colostate.edu/~jah/talks_public_html/isec2020/installRStudio.html>
+
+### Introduction to `tidycensus` Package
+
+`tidycensus` is an R package designed to help R users get Census data pre-prepared to use with tidyverse [^10]. `tidycensus` is an R package that allows users to interface with a select number of the US Census Bureau’s data APIs and return tidyverse-ready data frames, optionally with simple feature geometry included.
+
+[^10]: <https://walker-data.com/tidycensus/>
+
+To install the package from an R environment, type and run the following command once:
+
+```{r install_tidycensus, echo = TRUE}
+# Only run ONCE (first time using package on local system)
+install.packages("tidycensus")
+```
+
+After the first time installing the package, any future scripts that reference the package can have this line of code:
+
+```{r load_tidycensus, echo = TRUE, eval = TRUE}
+# Run at the start each time working with R script
+library(tidycensus)
+```
+
+once at the top and that will be enough to load the `tidycensus` package. You may also want to run `library(tidycensus)` at the start to load in a common domain-general R package for doing data work.
+
+#### Getting Census API Key
+
+To access ACS data programmatically, you will need to obtain an API key from the Census Bureau. This key allows you to make requests to the Census API and retrieve data directly into your R environment. To gain access to your own API key, access the website [here](https://api.census.gov/data/key_signup.html). [^11] This site will require an organization name (or personal name if individual), and an email address. You can load the API key into R by running the following code in R:
+
+[^11]: <https://api.census.gov/data/key_signup.html>
+
+```{r api_key, echo = TRUE}
+# Assign the census API key to an object named "census_api"
+census_api <- "f1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z" # NOT REAL KEY
+```
+
+**NOTE:** Your API key is private information, take care to not share the string value or make it publically avaliable
+
+## Understanding ACS Variables
+
+For the scope of this project, we will be focusing on the following
+
+### Race and Ethnicity [DP05]
+
+The DP05 table in the ACS provides detailed information on race and ethnicity of the population. This includes counts and percentages of various racial and ethnic groups in a given area.
+
+### Race and Ethnicity of Children % [B01001A-I tables]
+
+The B01001A-I tables focus on the race and ethnicity of children in different age groups. This can be useful for understanding the demographic composition of children within a community.
+
+### Poverty Rates [S1701]
+
+The S1701 table provides data on poverty rates, including the number and percentage of individuals and families living below the poverty line.
+
+### Without Health Insurance [S2701]
+
+The S2701 table offers insights into the number and percentage of individuals without health insurance coverage. This can be crucial for understanding healthcare access within a community.
+
+### Children Without Health Insurance [B27001]
+
+The B27001 table specifically focuses on children without health insurance, providing detailed information on their demographic characteristics and uninsured rates. The American Community Survey (ACS) includes questions regarding health insurance status, which were added in 2008 and have been updated in the following years. The B27001 table series provides fine-grained information about general health insurance coverage, broken down into 9 age groups and 9 race/ethnicity groups. 
+Note: for broader age categories consider table C27001, containing three age groups (child, adult, senior citizen). For other insurance-related information, consider tables B27002 - B27023.
+
+When considering these tables, it is important to note that all data is disaggregated by age and each race/ethnicity group is given its own sub-table. In order to gain the counts of Children without Health Insurance, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then combine. 
+
+### Unemployment Rate % [B23002]
+The ACS provides data on employment for many geographic levels and localities, including their employment, retirement, occupation, and industry.
+
+Note: The ACS may not be the best source for employment information depending on your needs. Consider the Current Population Survey (CPS) provides employment statistics in monthly increments, better suited for longitudinal analysis. Or the state-partnered Longitudinal Employer–Household Dynamics (LEHD).
+
+
+### Homeownership % [S2502]
+
+The S2502 table in the ACS provides valuable information on homeownership rates within different geographic areas. Homeownership percentage is a crucial indicator of housing stability and economic well-being in a community. 
+
+### Finding Other Variables of Interest
+
+The variables above were the focus of this project but there may be scenarios where you are interested in pulling your own case-specific variables.
+
+#### Helper Function: Pulling All MetaData
+
+To find table codes in R, we can create a custom function in R that can combine all the metadata we are interested into a table we can search through. The function is shown here:
+
+```{r metadata_func, echo = TRUE, eval = TRUE}
+# A custom R function that creates a table of all variable codes and metadata
+all_acs_meta <- function(year){
+  
+  # Gets the list of all variables from all acs5 metadata tables
+  vars1 <- load_variables(year, "acs5") %>% select(-geography) # Remove the geography column
+  vars2 <- load_variables(year, "acs5/profile")
+  vars3 <- load_variables(year, "acs5/subject")
+  vars4 <- load_variables(year, "acs5/cprofile")
+
+  # Provides column with specific lookup
+  vars1$dataset_table <- "acs5"
+  vars2$dataset_table  <- "acs5/profile"
+  vars3$dataset_table  <- "acs5/subject"
+  vars4$dataset_table  <- "acs5/cprofile"
+
+  # Combine all table rows
+  all_vars_meta <- rbind(vars1, vars2, vars3, vars4)
+
+  return(all_vars_meta)
+}
+```
+
+As we can see the variable metadata being loaded in the function above only applies to the 5-year ACS results (`acs5`). If you are working with the 1-year results, the names would have to be changes (for example, to `acs1`). After running the code above, you can enter the following command and provide a year as shown below:
+
+```{r print_table, echo = TRUE, eval = TRUE, cache = TRUE}
+# Creates a table of all the metadata called "meta_table"
+meta_table <- all_acs_meta(year = 2021)
+
+# Opens the newly made table
+View(meta_table)
+```
+
+Instead we will show you the result of the first 5 lines for the table:
+
+```{r, eval = TRUE}
+# Gives head values for table
+kable(head(meta_table))
+```
+
+
+This will allow you to view all the table codes and search for specific codes, there are also descriptions for each variable code and what they are measuring.
+
+<img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/Example001.png" alt="Meta Table" style="width: 75%;"/>
+
+### Validating API Pulls Using Census Website
+
+Once you get ACS data in R, it’s important to validate the data to ensure the numbers are what you intended to pull. An easy way to do this is by accessing the data from [Census Data Tables](data.census.gov). [^12] Search for the specific table code and narrow down to the locality you are looking for using the filter options on the left. Don’t forget to specify the ACS estimate you are looking for.
+
+<img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/Example002.png" alt="Meta Table" style="width: 75%;"/>
+
+Clicking on the “American Community Survey” will open up the following, allowing you to select which estimate you are looking for.
+
+<img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/Example003.png" alt="Meta Table" style="width: 30%;"/>
+
+Cross-compare the numbers here from the ones in R to ensure they match.
+
+[^12]: https://data.census.gov
+
+## Aggregating Across Counties
+
+## Helpful Resources for ACS Work
