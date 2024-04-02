@@ -21,13 +21,9 @@ Here, we provide some background information useful for a novice or first-time u
 
 The US Census Bureau provides current data on America’s people, places, and economy. Their mission is to serve as the nation’s leading provider of quality data about its people and economy. The Census Bureau works to honor privacy, protect confidentiality, share their expertise globally, and conduct their work openly. [^1]
 
-[^1]: <https://www.census.gov/about/what/census-at-a-glance.html>
-
 ### The American Community Survey (ACS)
 
 This documentation will focus on the **American Community Survey (ACS)**, an ongoing annual survey that shows what the U.S. population looks like and how it lives.[^2] The ACS is a tool that can help communities decide where to target services and resources by helping them understand the changes happening in their communities. It is an important source of detailed population and housing information.
-
-[^2]: <https://www.census.gov/programs-surveys/acs.html>
 
 ::: {style="text-align:center;"}
 <img src="https://www.census.gov/content/dam/Census/gs-imports/social-media-sharing-images/social-image-acs.png" alt="The US Census ACS" style="width:75%; float:right; margin:0 10px 10px 0;"/>
@@ -35,13 +31,14 @@ This documentation will focus on the **American Community Survey (ACS)**, an ong
 
 The ACS releases new data each year in the form of estimates. These estimates are presented in a variety of tables, tools, and analytical reports. The ACS data can be accessed through the Census Bureau’s platform, data.census.gov. The ACS has 1-year [^3] and 5-year estimates of the data [^4]. It is important to consider currency and sample size/reliability/precision in choosing which dataset to use. The table “Distinguishing features of ACS 1-year, 1-year supplemental, 3-year, and 5-year estimates” [^5] summarizes details, research implications, and examples to help guide data users.
 
-[^3]: <https://www.census.gov/data/developers/data-sets/acs-1year.html>
-
-[^4]: <https://www.census.gov/data/developers/data-sets/acs-5year.html>
-
-[^5]: <https://www.census.gov/programs-surveys/acs/guidance/estimates.html>
-
 > For the purposes of this documentation, we will focus on accessing ACS 5-year estimates.
+
+
+[^1]: <https://www.census.gov/about/what/census-at-a-glance.html>
+[^2]: <https://www.census.gov/programs-surveys/acs.html>
+[^3]: <https://www.census.gov/data/developers/data-sets/acs-1year.html>
+[^4]: <https://www.census.gov/data/developers/data-sets/acs-5year.html>
+[^5]: <https://www.census.gov/programs-surveys/acs/guidance/estimates.html>
 
 ## First Steps
 
@@ -59,23 +56,15 @@ The ACS releases new data each year in the form of estimates. These estimates ar
 
 **R** is a programming language and software environment for statistical computing and graphics. It serves as a integrated suite of software facilities for data manipulation, calculation and graphical display, including effective data handling, operators for calculations on arrays/matrices,a collection of intermediate data analysis tools. R is an effective programming language widely used among statisticians and data miners for data analysis and developing statistical software. More information about R and links for installation can be found at at their website. [^6]
 
-[^6]: <https://www.r-project.org/>
-
 **RStudio** is an integrated development environment (IDE) for R [^7]. IDEs are developer environments that provide better tools and UI for working in R. It provides a user-friendly interface to work with R, making it easier to write and run R code, view plots and charts, manage files, and more.
 
-[^7]: <https://posit.co/download/rstudio-desktop/>
-
 > Both must be installed if this is the first time you are working with R, there are numerous guides walking you through the process [^8][^9].If you already have R/RStudio installed, you can skip this section.
-
-[^8]: <https://rstudio-education.github.io/hopr/starting.html>
-
-[^9]: <https://www.stat.colostate.edu/~jah/talks_public_html/isec2020/installRStudio.html>
 
 ### Introduction to `tidycensus` Package
 
 `tidycensus` is an R package designed to help R users get Census data pre-prepared to use with tidyverse [^10]. `tidycensus` is an R package that allows users to interface with a select number of the US Census Bureau’s data APIs and return tidyverse-ready data frames, optionally with simple feature geometry included.
 
-[^10]: <https://walker-data.com/tidycensus/>
+<img src="https://walker-data.com/tidycensus/logo.png" alt="Tidycensus Logo" style="width:20%; float:right; margin:0 10px 10px 0;"/>
 
 To install the package from an R environment, type and run the following command once:
 
@@ -97,14 +86,19 @@ once at the top and that will be enough to load the `tidycensus` package. You ma
 
 To access ACS data programmatically, you will need to obtain an API key from the Census Bureau. This key allows you to make requests to the Census API and retrieve data directly into your R environment. To gain access to your own API key, access the website [here](https://api.census.gov/data/key_signup.html). [^11] This site will require an organization name (or personal name if individual), and an email address. You can load the API key into R by running the following code in R:
 
-[^11]: <https://api.census.gov/data/key_signup.html>
-
 ```{r api_key, echo = TRUE}
 # Assign the census API key to an object named "census_api"
 census_api <- "f1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z" # NOT REAL KEY
 ```
 
 **NOTE:** Your API key is private information, take care to not share the string value or make it publically avaliable
+
+[^6]: <https://www.r-project.org/>
+[^7]: <https://posit.co/download/rstudio-desktop/>
+[^8]: <https://rstudio-education.github.io/hopr/starting.html>
+[^9]: <https://www.stat.colostate.edu/~jah/talks_public_html/isec2020/installRStudio.html>
+[^10]: <https://walker-data.com/tidycensus/>
+[^11]: <https://api.census.gov/data/key_signup.html>
 
 ## Understanding ACS Variables
 
