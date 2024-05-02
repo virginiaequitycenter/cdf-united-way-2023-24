@@ -1,5 +1,5 @@
 ## Tidycensus code for United Way Data
-## Authors: Ethan Assefa, Sanny Yang, Elizabeth Mitchell, Michele Claiborn 
+## Authors: Ethan Assefa, Sanny Yang, Elizabeth Mitchell, Michele Claibourn 
 
 ## This script can be used to create tables for ONE COUNTY or ONE COMBINED REGION (Example: Charlottesville-Albermarle)
 ## Data Request - THESE ARE FOR 2022 ACS 5-YEAR EST - TABLE CODES CAN BE DIFFERENT FOR DIFFERENT YEARS
