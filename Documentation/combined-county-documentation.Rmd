@@ -1,8 +1,11 @@
 ---
 title: "Pulling and Organizing Census ACS Data"
-author: "United Way & Equity Center Team"
+author: "Ethan Assefa & Sanny Yang (United Way & Equity Center Team)"
 date: "2024-03-18"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 3
 ---
 
 ```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
@@ -32,25 +35,25 @@ The US Census Bureau provides current data on America’s people, places, and ec
 This documentation will focus on the **American Community Survey (ACS)**, an ongoing annual survey that shows what the U.S. population looks like and how it lives.[^2] The ACS is a tool that can help communities decide where to target services and resources by helping them understand the changes happening in their communities. It is an important source of detailed population and housing information.
 
 ::: {style="text-align:center;"}
-<img src="https://www.census.gov/content/dam/Census/gs-imports/social-media-sharing-images/social-image-acs.png" alt="The US Census ACS" style="width:75%; float:right; margin:0 10px 10px 0;"/>
+<img src="https://www.census.gov/content/dam/Census/gs-imports/social-media-sharing-images/social-image-acs.png" alt="The US Census ACS" style="width:45%; float:right; margin:0 10px 10px 0;"/>
 :::
 
 The ACS releases new data each year in the form of estimates. These estimates are presented in a variety of tables, tools, and analytical reports. The ACS data can be accessed through the Census Bureau’s platform, data.census.gov. The ACS has 1-year [^3] and 5-year estimates of the data [^4]. It is important to consider currency and sample size/reliability/precision in choosing which dataset to use. The table “Distinguishing features of ACS 1-year, 1-year supplemental, 3-year, and 5-year estimates” [^5] summarizes details, research implications, and examples to help guide data users.
 
 > For the purposes of this documentation, we will focus on accessing ACS 5-year estimates.
 
-## Understanding ACS Variables
+## Understanding ACS Tables
 
-For the scope of this project, we will be focusing on the following variables.
+For the scope of this project, we will be focusing on the following table codes. You can find more documentation around ACS table codes [here](https://censusreporter.org/topics/table-codes/). 
 
-### Race and Ethnicity [DP05]
+### ACS Demographic and Housing Characteristics [DP05]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/raceethn_Qs.png" alt="Questions regarding race/ethnicity" style="margin:0 10px 10px 0;"/>
 :::
 ::: {style="flex: 70%; padding: 10px;"}
-The DP05 table in the ACS provides detailed information on race and ethnicity of the population. The data profile (DP) tables provide a lot of popular statistics across subjects - in this case, demographic and housing characteristics - in a single table. We are particularly intersted in counts and percentages of various racial and ethnic groups in a given area. The US Census defines race here as a subset based on responses to the race or Hispanic/Latino-origin questions. 
+The DP05 table provides detailed information on population estimates by race and ethnicity. The data profile (DP) tables provide a lot of popular statistics across subjects - in this case, demographic and housing characteristics - in a single table. We are particularly interested in counts and percentages of various racial and ethnic groups in a given area. The US Census defines race here as a subset based on responses to the race or Hispanic/Latino-origin questions. 
 
 These provide the following possible categories:
 
@@ -80,20 +83,20 @@ I. Hispanic or Latino
 :::
 :::
 
-### Race and Ethnicity of Children % [B01001A-I tables]
+### Sex by Age [B01001A-I tables]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
-The B01001 table provides sex by age - these are the estimated count of men and women in age buckets, mostly of five years (e.g. 25 to 29 years, 30 to 34 years). Certain age groups - including the later teens and in the 60’s - have brackets of differing sizes; there is also columns for just 20-year-olds and for just 21-year-olds. 
+The B01001 table provides sex by age - these are the estimated counts of men and women in age buckets, mostly of five years (e.g. 25 to 29 years, 30 to 34 years). We focus on this table to get race and ethnicity (%) estimates of children. Certain age groups - including the later teens and in the 60’s - have brackets of differing sizes; there are also columns for just 20-year-olds and for just 21-year-olds. 
  
-The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. For example, B01001A provides sex by age for White alone and B01001B provides sex by age for Black or African American alone. Aggregating by sex and age for each of these tables provides the number of children by each race and ethnicity. This can be useful for understanding the demographic composition of children within a community.
+The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. For example, B01001A provides sex by age for White alone and B01001B provides sex by age for Black or African American alone. Aggregating by sex and age for each of these tables provides the number of children by each race and ethnicity. This can be useful for understanding the demographic composition of children within a community. You can find more detailed information on the table [here](https://censusreporter.org/tables/B01001/). 
 :::
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/raceethn_Qs.png" alt="Questions regarding race/ethnicity" style="margin:0 10px 10px 0;"/>
 :::
 :::
 
-### Poverty Rates [S1701]
+### Poverty Status in the Past 12 Months [S1701]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 30%; padding: 10px;"}
@@ -102,7 +105,7 @@ The letters A through I provide versions of this table by race and ethnicity, th
 ::: {style="flex: 70%; padding: 10px;"}
 The S1701 table provides data on poverty rates, including the number and percentage of individuals and families living below the poverty line. The ACS is the only source for official poverty data down to the community level, making it invaluable as the official poverty measure has direct policy implications, such as the allocation of federal funds to help low income individuals and families at the state and locality levels. The S1701 table provides poverty status in the past 12 months by age, sex, race and ethnicity, educational attainment, employment status, and work experience. The S1702 table provides poverty status in the past 12 months of families. Other tables include B17001 (poverty status in the past 12 months by sex by age), B18131 (age by ratio of income to poverty level in the past 12 months by disability status and type), and B17022 (ratio of income to poverty level in the past 12 months of families by family type by presence of related children under 18 years by age of related children). 
 
-While people colloquially refer to the poverty level as a singular concept, in reality, the Census Bureau uses a set of poverty thresholds to determine who is in poverty. Fourty-eight different poverty income levels are computed and these values are determined based mostly on family size, and, for 1-2 person households, with separate numbers for senior citizens. Only income before taxes is included and it does not include non-cash benefits such as public housing, Medicaid, and food stamps. Poverty is also not calculated for households, rather the whole household is assigned the poverty status of the person who filled out the form. Poverty is also not determined for people living in group quarters such as prisons, college dormitories, military quarters, and nursing homes. It is also not determined for homeless people unless they are living in shelters. It also does not include children under 15 who are not living with their families such as foster children, children living with non-relatives or on their own. 
+While people colloquially refer to the poverty level as a singular concept, in reality, the Census Bureau uses a set of poverty thresholds to determine who is in poverty. Forty-eight different poverty income levels are computed and these values are determined based mostly on family size, and, for 1-2 person households, with separate numbers for senior citizens. Only income before taxes is included and it does not include non-cash benefits such as public housing, Medicaid, and food stamps. Poverty is also not calculated for households, rather the whole household is assigned the poverty status of the person who filled out the form. Poverty is also not determined for people living in group quarters such as prisons, college dormitories, military quarters, and nursing homes. It is also not determined for homeless people unless they are living in shelters. It also does not include children under 15 who are not living with their families such as foster children, children living with non-relatives or on their own. 
 
 Note: same-sex married couples were not treated as married by the Census until 2013, even if legally married. Only the income of the householder and any of their children was included in the poverty calculations until that point. 
 
@@ -110,7 +113,7 @@ More information on how poverty is determined by the Census Bureau can be found 
 :::
 :::
 
-### Median Household Income [B19001]
+### Household Income [B19001]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
@@ -135,14 +138,14 @@ Most income data is reported at the household level, but there are tables which 
 
 We cannot aggregate medians the same way we do for other measures, instead we use the following guide to [calculate an approximate median based on frequency of median income brackets](https://dof.ca.gov/wp-content/uploads/sites/352/Forecasting/Demographics/Documents/How_to_Recalculate_a_Median.pdf)[^7].
 
-When considering these tables, it is important to note that each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the median household income, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then join them together.
+When considering these tables, it is important to note that each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the median household income, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then join them together. You can find more detailed information on the table [here](https://censusreporter.org/tables/B19001/). 
 :::
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/income_Qs.png" alt="Questions regarding income" style="margin:0 10px 10px 0;"/>
 :::
 :::
 
-### Without Health Insurance [S2701]
+### Selected Characteristics of Health Insurance Coverage in the United States [S2701]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 30%; padding: 10px;"}
@@ -153,7 +156,7 @@ The S2701 table offers insights into the number and percentage of individuals wi
 :::
 :::
 
-### Children Without Health Insurance [B27001]
+### Health Insurance Coverage Status by Sex by Age [B27001]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
@@ -161,14 +164,14 @@ The B27001 table specifically focuses on children without health insurance, prov
 
 Note: for broader age categories consider table C27001, containing three age groups (child, adult, senior citizen). For other insurance-related information, consider tables B27002 - B27023.
 
-When considering these tables, it is important to note that all data is disaggregated by age and each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the counts of Children without Health Insurance, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then combine. 
+When considering these tables, it is important to note that all data is disaggregated by age and each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the counts of Children without Health Insurance, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then combine. You can find more detailed information on the table [here](https://censusreporter.org/tables/B27001/). 
 :::
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/insurance_Qs.png" alt="Questions regarding insurance" style="margin:0 10px 10px 0;"/>
 :::
 :::
 
-### Unemployment Rate [S2301]
+### Employment Status [S2301]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 30%; padding: 10px;"}
@@ -181,7 +184,7 @@ Note: The ACS may not be the best source for employment information depending on
 :::
 :::
 
-### Homeownership Rate [S2502]
+### Demographic Characteristics for Occupied Housing Units [S2502]
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
@@ -216,7 +219,7 @@ Now, we move on to the technical aspect of the walkthrough, examining the tools 
 :::
 :::
 
-**R** is a programming language and software environment for statistical computing and graphics. It serves as a integrated suite of software facilities for data manipulation, calculation and graphical display, including effective data handling, operators for calculations on arrays/matrices,a collection of intermediate data analysis tools. R is an effective programming language widely used among statisticians and data miners for data analysis and developing statistical software. More information about R and links for installation can be found at at their website. [^8]
+**R** is a programming language and software environment for statistical computing and graphics. It serves as an integrated suite of software facilities for data manipulation, calculation and graphical display, including effective data handling, operators for calculations on arrays/matrices, and a collection of intermediate data analysis tools. R is an effective programming language widely used among statisticians and data miners for data analysis and developing statistical software. More information about R and links for installation can be found at their website. [^8]
 
 **RStudio** is an integrated development environment (IDE) for R [^9]. IDEs are developer environments that provide better tools and UI for working in R. It provides a user-friendly interface to work with R, making it easier to write and run R code, view plots and charts, manage files, and more.
 
@@ -334,12 +337,12 @@ Cross-compare the numbers here from the ones in R to ensure they match.
 
 ## Aggregating Across Counties
 
-When pulling Census data at the county-level using `tidycensus` we can only pull data for individual counties, the package contains no way to aggregate values across a range of counties. In order to do this, we must pull the data in for each county of interest, then manually agggregate the values across the counties.
+When pulling Census data at the county-level using `tidycensus`, we can only pull data for individual counties, as the package contains no way to aggregate values across a range of counties. In order to do this, we must pull the data in for each county of interest, then manually aggregate the values across the counties.
 
-> Note: This can only reliably be done for count data, attempting to aggregate other measures (like medians, percentages, etc.) will result in misleading and inaccurate metrics for the combined counties
+> Note: The example included in this section works well for table DP05 and other tables containing count data; however, counts, medians, and rates require different methods to aggregate across counties and care should be taken to ensure the correct aggregation method is applied for the respective metrics
 
 ### County Aggregation Example
-We begin by determining what our combined area of interest for the ACS data is and where it can be found. In this case, we are interested in results from the year of **2022** for the combined counties of **Charlottesville, VA and Albermarle, VA**. We define these variables below:
+We begin by determining what our combined area of interest for the ACS data is and where it can be found. In this case, we are interested in results from the year of **2022** for the combined counties of **Charlottesville, VA and Albemarle, VA**. We define these variables below:
 
 ```{r, echo=TRUE, eval=FALSE}
 # Census API key
@@ -379,7 +382,7 @@ acs_data_DP05 <- get_acs(geography = "county",
                     ) 
 ```
 
-We first create a dictionary that maps the variable code in the ACS tables to the appropriate category label. For example, the code "DP05_0038" is tied to count of "Black or African-American alone" race/ethnicity respondents. 
+We first create a dictionary that maps the variable code in the ACS tables to the appropriate category label. For example, the code "DP05_0038" is tied to the count of "Black or African-American alone" race/ethnicity respondents. 
 
 From there, call the `get_acs()` function. The arguments provided as function inputs are the following:
 
@@ -444,7 +447,7 @@ acs_data_DP05_summarize <- acs_data_DP05_summarize %>%
 
 We are grouping by the **variable** column, which contains the race/ethnicity breakdown for the variable. This will aggregate the two counties together for each race/ethnicity. Then, with the `summarize()` function we are calculating the sums for each of the count values, including the estimated counts for each race/ethnicity category, and the sum of the total counts in each respective county. For the margin of error (moe), we can utilize a special `tidycensus` function called `moe_sum()`, which takes two arguments, the moe value and its respective point estimate.
 
-In the next code chunk, we convert the summed counts into percentages by dividing the race/ethnicity counts by the total counts to get the proportiion and multiplying by 100. The name of the combined counties is added as a column for clarity.
+In the next code chunk, we convert the summed counts into percentages by dividing the race/ethnicity counts by the total counts to get the proportion and multiplying by 100. The name of the combined counties is added as a column for clarity.
 
 Running all this provides the following output:
 
@@ -474,8 +477,6 @@ Below are some resources which are helpful for exploring Census ACS data:
 - [censusreporter.org](https://censusreporter.org/): Helpful way to approach census tables, provides topics/table codes for navigation
 
 - [data.census.gov](https://data.census.gov/): The census site, can search directly for tables using table codes
-
-- [socialexplorer.com](https://www.socialexplorer.com/explore-tables): Helps build tables and maps easily
 
 - [UVA library guide for census data](https://guides.lib.virginia.edu/c.php?g=1357748&p=10025369)
 
