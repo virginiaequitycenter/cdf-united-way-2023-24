@@ -23,22 +23,22 @@ Here, we provide some background information useful for non-technical audiences 
 
 ::: {style="display: flex;"}
 ::: {style="flex: 40%; text-align:center; padding: 10px;"}
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/United_States_Census_Bureau_Wordmark.svg/2560px-United_States_Census_Bureau_Wordmark.svg.png" alt="US Census Bureau Logo" style="float:left;"/>
+<img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/uscensuslogo.png" alt="US Census Bureau Logo" style="float:left;"/>
 :::
 ::: {style="flex: 60%; padding: 10px;"}
-The US Census Bureau provides current data on America’s people, places, and economy. Their mission is to serve as the nation’s leading provider of quality data about its people and economy. The Census Bureau works to honor privacy, protect confidentiality, share their expertise globally, and conduct their work openly. [^1]
+The US Census Bureau provides current data on America’s people, places, and economy. Their mission is to serve as the nation’s leading provider of quality data about its people and economy. The Census Bureau works to honor privacy, protect confidentiality, share their expertise globally, and conduct their work openly.[^1]
 :::
 :::
 
 ### The American Community Survey (ACS)
 
-This documentation will focus on the **American Community Survey (ACS)**, an ongoing annual survey that shows what the U.S. population looks like and how it lives.[^2] The ACS is a tool that can help communities decide where to target services and resources by helping them understand the changes happening in their communities. It is an important source of detailed population and housing information.
+This documentation will focus on the **American Community Survey (ACS)**, an ongoing annual survey that shows what the US population looks like and how it lives.[^2] The ACS is a tool that can help communities decide where to target services and resources by helping them understand the changes happening in their communities. It is an important source of detailed population and housing information.
 
 ::: {style="text-align:center;"}
 <img src="https://www.census.gov/content/dam/Census/gs-imports/social-media-sharing-images/social-image-acs.png" alt="The US Census ACS" style="width:45%; float:right; margin:0 10px 10px 0;"/>
 :::
 
-The ACS releases new data each year in the form of estimates. These estimates are presented in a variety of tables, tools, and analytical reports. The ACS data can be accessed through the Census Bureau’s platform, data.census.gov. The ACS has 1-year [^3] and 5-year estimates of the data [^4]. It is important to consider currency and sample size/reliability/precision in choosing which dataset to use. The table “Distinguishing features of ACS 1-year, 1-year supplemental, 3-year, and 5-year estimates” [^5] summarizes details, research implications, and examples to help guide data users.
+The ACS releases new data each year in the form of estimates. These estimates are presented in a variety of tables, tools, and analytical reports. The ACS data can be accessed through the Census Bureau’s platform, data.census.gov. The ACS has 1-year[^3] and 5-year estimates of the data.[^4] It is important to consider currency and sample size/reliability/precision in choosing which dataset to use. The table “Distinguishing features of ACS 1-year, 1-year supplemental, 3-year, and 5-year estimates”[^5] summarizes details, research implications, and examples to help guide data users.
 
 > For the purposes of this documentation, we will focus on accessing ACS 5-year estimates.
 
@@ -66,7 +66,7 @@ raceethn_tbl <- tibble(`Table Codes` = c("A", "B", "C", "D", "E", "F", "G", "H",
 kable(raceethn_tbl)
 ```
 
-Out of these nine groups, we consistently focus on the following six across all variables when stratifying by race/ethnicity, this helps prevent overlap in our race/ethnicity categories:
+Out of these nine groups, we consistently focus on the following six across all variables when stratifying by race/ethnicity, which helps prevent overlap in our race/ethnicity categories:
 
 B. Black or African American Alone
 
@@ -87,7 +87,7 @@ I. Hispanic or Latino
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
-The B01001 table provides sex by age - these are the estimated counts of men and women in age buckets, mostly of five years (e.g. 25 to 29 years, 30 to 34 years). We focus on this table to get race and ethnicity (%) estimates of children. Certain age groups - including the later teens and in the 60’s - have brackets of differing sizes; there are also columns for just 20-year-olds and for just 21-year-olds. 
+The B01001 table provides sex by age - these are the estimated counts of men and women in age buckets, mostly of five years (e.g. 25 to 29 years, 30 to 34 years). We focus on this table to get race and ethnicity (%) estimates of children. Certain age groups - including the later teens and the 60’s - have brackets of differing sizes; there are also columns for just 20-year-olds and for just 21-year-olds. 
  
 The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. For example, B01001A provides sex by age for White alone and B01001B provides sex by age for Black or African American alone. Aggregating by sex and age for each of these tables provides the number of children by each race and ethnicity. This can be useful for understanding the demographic composition of children within a community. You can find more detailed information on the table [here](https://censusreporter.org/tables/B01001/). 
 :::
@@ -107,7 +107,7 @@ The S1701 table provides data on poverty rates, including the number and percent
 
 While people colloquially refer to the poverty level as a singular concept, in reality, the Census Bureau uses a set of poverty thresholds to determine who is in poverty. Forty-eight different poverty income levels are computed and these values are determined based mostly on family size, and, for 1-2 person households, with separate numbers for senior citizens. Only income before taxes is included and it does not include non-cash benefits such as public housing, Medicaid, and food stamps. Poverty is also not calculated for households, rather the whole household is assigned the poverty status of the person who filled out the form. Poverty is also not determined for people living in group quarters such as prisons, college dormitories, military quarters, and nursing homes. It is also not determined for homeless people unless they are living in shelters. It also does not include children under 15 who are not living with their families such as foster children, children living with non-relatives or on their own. 
 
-Note: same-sex married couples were not treated as married by the Census until 2013, even if legally married. Only the income of the householder and any of their children was included in the poverty calculations until that point. 
+Note: same-sex married couples were not treated as married by the Census until 2013, even if legally married. Only the income of the householder and any of their children were included in the poverty calculations until that point. 
 
 More information on how poverty is determined by the Census Bureau can be found at [How the Census Bureau Measures Poverty](https://www.census.gov/topics/income-poverty/poverty/guidance/poverty-measures.html)[^6].
 :::
@@ -117,7 +117,7 @@ More information on how poverty is determined by the Census Bureau can be found 
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
-Most income data is reported at the household level, but there are tables which are focused on family households, as well as some which report on individual income. Income is reported in a number of ways: as a median value, or as a series of medians for groups within a total population; as a number of people or households earning in a certain bracket; as well as a few other structures. In order to calculate median household income, we consider the B19001 tables, which provide frequency counts for the number of households which have median incomes that fall within each of the income brackets below:
+Most income data is reported at the household level, but there are tables which are focused on family households, as well as some which report on individual income. Income is reported in a number of ways: as a median value or as a series of medians for groups within a total population; as a number of people or households earning in a certain bracket; as well as a few other structures. In order to calculate median household income, we consider the B19001 tables, which provide frequency counts for the number of households which have median incomes that fall within each of the income brackets below:
 
 - Less than \$10,000
 - \$10,000 to \$14,999
@@ -136,9 +136,9 @@ Most income data is reported at the household level, but there are tables which 
 - \$150,000 to \$199,999
 - \$200,000 or more
 
-We cannot aggregate medians the same way we do for other measures, instead we use the following guide to [calculate an approximate median based on frequency of median income brackets](https://dof.ca.gov/wp-content/uploads/sites/352/Forecasting/Demographics/Documents/How_to_Recalculate_a_Median.pdf)[^7].
+We cannot aggregate medians the same way we do for other measures; instead, we use the following guide to [calculate an approximate median based on frequency of median income brackets](https://dof.ca.gov/wp-content/uploads/sites/352/Forecasting/Demographics/Documents/How_to_Recalculate_a_Median.pdf)[^7].
 
-When considering these tables, it is important to note that each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the median household income, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then join them together. You can find more detailed information on the table [here](https://censusreporter.org/tables/B19001/). 
+When considering these tables, it is important to note that each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity. These letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the median household income, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then join them together. You can find more detailed information on the table [here](https://censusreporter.org/tables/B19001/). 
 :::
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/income_Qs.png" alt="Questions regarding income" style="margin:0 10px 10px 0;"/>
@@ -160,11 +160,11 @@ The S2701 table offers insights into the number and percentage of individuals wi
 
 ::: {style="display: flex;"}
 ::: {style="flex: 70%; padding: 10px;"}
-The B27001 table specifically focuses on children without health insurance, providing detailed information on their demographic characteristics and uninsured rates. The American Community Survey (ACS) includes questions regarding health insurance status, which were added in 2008 and have been updated in the following years. The B27001 table series provides fine-grained information about general health insurance coverage, broken down into 9 age groups and 9 race/ethnicity groups. 
+The B27001 table specifically focuses on children without health insurance, providing detailed information on their demographic characteristics and uninsured rates. The American Community Survey (ACS) includes questions regarding health insurance status, which were added in 2008 and have been updated in the following years. The B27001 table series provides fine-grained information about general health insurance coverage, broken down into nine age groups and nine race/ethnicity groups. 
 
-Note: for broader age categories consider table C27001, containing three age groups (child, adult, senior citizen). For other insurance-related information, consider tables B27002 - B27023.
+Note: For broader age categories, consider table C27001, which contains three age groups (child, adult, senior citizen). For other insurance-related information, consider tables B27002 - B27023.
 
-When considering these tables, it is important to note that all data is disaggregated by age and each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity, these letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the counts of Children without Health Insurance, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then combine. You can find more detailed information on the table [here](https://censusreporter.org/tables/B27001/). 
+When considering these tables, it is important to note that all data is disaggregated by age and each race/ethnicity group is given its own sub-table. The letters A through I provide versions of this table by race and ethnicity. These letter codes follow the same race/ethnicity codes discussed earlier. In order to gain the counts of Children without Health Insurance, we will have to pull in each of the sub-tables for our race/ethnicity of interest and then combine them. You can find more detailed information on the table [here](https://censusreporter.org/tables/B27001/). 
 :::
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/insurance_Qs.png" alt="Questions regarding insurance" style="margin:0 10px 10px 0;"/>
@@ -178,9 +178,9 @@ When considering these tables, it is important to note that all data is disaggre
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/employ_Qs.png" alt="Questions regarding employment status" style="margin:0 10px 10px 0;"/>
 :::
 ::: {style="flex: 70%; padding: 10px;"}
-The ACS provides data on employment for many geographic levels and localities, including their employment, retirement, occupation, and industry. The Census Bureau asks a number of questions about whether individuals are employed, and if they are not unemployed or retired, about their occupation and industry. Census Reporter collects these together under the tag 'employment'. When talking about employment status, the Census Bureau divides the population 16 years and older into two categories: in the labor force or not in the labor force. People who have never worked or who are retired are not in the labor force. People who are not currently working but have recently and would like to work are considered in the labor force, but unemployed. People who are actively working are described as either in the civilian labor force or in the armed forces
+The ACS provides data on employment for many geographic levels and localities, including their employment, retirement, occupation, and industry. The Census Bureau asks a number of questions about whether individuals are employed and, if they are employed and not retired, about their occupation and industry. Census Reporter collects these together under the tag 'employment'. When talking about employment status, the Census Bureau divides the population 16 years and older into two categories: in the labor force or not in the labor force. People who have never worked or who are retired are not in the labor force. People who are not currently working but have recently and would like to work are considered in the labor force, but unemployed. People who are actively working are described as either in the civilian labor force or in the armed forces.
 
-Note: The ACS may not be the best source for employment information depending on your needs. Consider the Current Population Survey (CPS) provides employment statistics in monthly increments, better suited for longitudinal analysis. Or the state-partnered Longitudinal Employer–Household Dynamics (LEHD).
+Note: The ACS may not be the best source for employment information depending on your needs. Consider the Current Population Survey (CPS), which provides employment statistics in monthly increments and is better suited for longitudinal analysis. The state-partnered Longitudinal Employer–Household Dynamics (LEHD) is another option.
 :::
 :::
 
@@ -190,7 +190,7 @@ Note: The ACS may not be the best source for employment information depending on
 ::: {style="flex: 70%; padding: 10px;"}
 The American Community Survey (ACS) gathers extensive data about the housing conditions of respondents, including whether they own or rent their home, how much they spend on housing, and the physical characteristics of homes. The ACS primarily reports housing data in tables with codes beginning with 25. Most of the tables count the number of housing units for a given characteristic. However, a few tables estimate the number of people living in owned or rented housing units. A housing unit is anything from a house to an apartment or even a boat if a person is currently living there. 
 
-Homeownership percentage is a crucial indicator of housing stability and economic well-being in a community. The S2502 table in the ACS provides valuable information on homeownership rates within different geographic areas and for different race/ethnicity groups.
+Homeownership percentage is a crucial indicator of housing stability and economic well-being in a community. The S2502 table in the ACS provides valuable information on homeownership rates within different geographical areas and for different race/ethnicity groups.
 :::
 ::: {style="flex: 30%; padding: 10px;"}
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/housing_Qs.png" alt="Questions regarding housing status" style="margin:0 10px 10px 0;"/>
@@ -219,15 +219,15 @@ Now, we move on to the technical aspect of the walkthrough, examining the tools 
 :::
 :::
 
-**R** is a programming language and software environment for statistical computing and graphics. It serves as an integrated suite of software facilities for data manipulation, calculation and graphical display, including effective data handling, operators for calculations on arrays/matrices, and a collection of intermediate data analysis tools. R is an effective programming language widely used among statisticians and data miners for data analysis and developing statistical software. More information about R and links for installation can be found at their website. [^8]
+**R** is a programming language and software environment for statistical computing and graphics. It serves as an integrated suite of software facilities for data manipulation, calculation and graphical display, including effective data handling, operators for calculations on arrays/matrices, and a collection of intermediate data analysis tools. R is an effective programming language widely used among statisticians and data miners for data analysis and developing statistical software. More information about R and links for installation can be found at their website.[^8]
 
-**RStudio** is an integrated development environment (IDE) for R [^9]. IDEs are developer environments that provide better tools and UI for working in R. It provides a user-friendly interface to work with R, making it easier to write and run R code, view plots and charts, manage files, and more.
+**RStudio** is an integrated development environment (IDE) for R.[^9] IDEs are developer environments that provide better tools and UI for working in R. It provides a user-friendly interface to work with R, making it easier to write and run R code, view plots and charts, manage files, and more.
 
-> Both must be installed if this is the first time you are working with R, there are numerous guides walking you through the process [^10][^11].If you already have R/RStudio installed, you can skip this section.
+> Both must be installed if this is the first time you are working with R, there are numerous guides walking you through the process.[^10][^11] If you already have R/RStudio installed, you can skip this section.
 
 ### Introduction to `tidycensus` Package
 
-`tidycensus` is an R package designed to help R users get Census data pre-prepared to use with tidyverse [^12]. `tidycensus` is an R package that allows users to interface with a select number of the US Census Bureau’s data APIs and return tidyverse-ready data frames, optionally with simple feature geometry included.
+`tidycensus` is an R package designed to help R users get Census data pre-prepared to use with tidyverse.[^12] `tidycensus` is an R package that allows users to interface with a select number of US Census Bureau’s data APIs and return tidyverse-ready data frames, optionally with simple feature geometry included.
 
 <img src="https://walker-data.com/tidycensus/logo.png" alt="Tidycensus Logo" style="width:20%; float:right; margin:0 10px 10px 0;"/>
 
@@ -245,18 +245,18 @@ After the first time installing the package, any future scripts that reference t
 library(tidycensus)
 ```
 
-once at the top and that will be enough to load the `tidycensus` package. You may also want to run `library(tidycensus)` at the start to load in a common domain-general R package for doing data work.
+This will be enough to load the `tidycensus` package. You may also want to run `library(tidycensus)` at the start to load in a common domain-general R package for doing data work.
 
 #### Getting Census API Key
 
-To access ACS data programmatically, you will need to obtain an API key from the Census Bureau. This key allows you to make requests to the Census API and retrieve data directly into your R environment. To gain access to your own API key, access the website [here](https://api.census.gov/data/key_signup.html). [^13] This site will require an organization name (or personal name if individual), and an email address. You can load the API key into R by running the following code in R:
+To access ACS data programmatically, you will need to obtain an API key from the Census Bureau. This key allows you to make requests to the Census API and retrieve data directly into your R environment. To gain access to your own API key, access the website [here](https://api.census.gov/data/key_signup.html).[^13] This site will require an organization name (or personal name of individual) and an email address. You can load the API key into R by running the following code in R:
 
 ```{r api_key, echo = TRUE}
 # Assign the census API key to an object named "census_api"
 census_api <- "f1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z" # NOT REAL KEY
 ```
 
-**NOTE:** Your API key is private information, take care to not share the string value or make it publically avaliable
+**NOTE:** Your API key is private information, take care to not share the string value or make it publicly available
 
 [^8]: <https://www.r-project.org/>
 [^9]: <https://posit.co/download/rstudio-desktop/>
@@ -271,7 +271,7 @@ The variables we described earlier were the focus of this project but there may 
 
 #### Helper Function: Pulling All MetaData
 
-To find table codes in R, we can create a custom function in R that can combine all the metadata we are interested into a table we can search through. The function is shown here:
+To find table codes in R, we can create a custom function in R that can combine all the metadata of interest into a table we can search through. The function is shown here:
 
 ```{r metadata_func, echo = TRUE, eval = TRUE}
 # A custom R function that creates a table of all variable codes and metadata
@@ -296,7 +296,7 @@ all_acs_meta <- function(year){
 }
 ```
 
-As we can see the variable metadata being loaded in the function above only applies to the 5-year ACS results (`acs5`). If you are working with the 1-year results, the names would have to be changes (in that case, to `acs1`). After running the code above, you can enter the following command and provide a year as shown below:
+As we can see, the variable metadata being loaded in the function above only applies to the 5-year ACS results (`acs5`). If you are working with the 1-year results, the names would have to be changed (in that case, to `acs1`). After running the code above, you can enter the following command and provide a year as shown below:
 
 ```{r print_table, echo = TRUE, eval = FALSE}
 # Creates a table of all the metadata called "meta_table"
@@ -306,7 +306,7 @@ meta_table <- all_acs_meta(year = 2021)
 View(meta_table)
 ```
 
-Instead we will show you the result of the first 5 lines for the table:
+Here, you can see the result of the first 5 lines for the table:
 
 ```{r, echo =  FALSE, eval = TRUE, cache = TRUE}
 # Creates a table of all the metadata called "meta_table"
@@ -317,13 +317,13 @@ kable(head(meta_table))
 ```
 
 
-This will allow you to view all the table codes and search for specific codes, there are also descriptions for each variable code and what they are measuring.
+This will allow you to view all the table codes and search for specific codes. There are also descriptions for each variable code and what they are measuring.
 
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/Example001.png" alt="Meta Table" style="width: 75%;"/>
 
 ### Validating API Pulls Using Census Website
 
-Once you get ACS data in R, it’s important to validate the data to ensure the numbers are what you intended to pull. An easy way to do this is by accessing the data from [Census Data Tables](data.census.gov). [^14] Search for the specific table code and narrow down to the locality you are looking for using the filter options on the left. Don’t forget to specify the ACS estimate you are looking for.
+Once you get ACS data in R, it’s important to validate the data to ensure the numbers are what you intended to pull. An easy way to do this is by accessing the data from [Census Data Tables](data.census.gov).[^14] Search for the specific table code and narrow down to the locality you are looking for using the filter options on the left. Don’t forget to specify the ACS estimate you are looking for.
 
 <img src="C:/Users/affes/OneDrive/Documents/UVA SDS Fall 2023/Other Events/Community Data Fellowship/cdf-united-way-2023-24/Documentation/Example002.png" alt="Meta Table" style="width: 75%;"/>
 
@@ -337,9 +337,9 @@ Cross-compare the numbers here from the ones in R to ensure they match.
 
 ## Aggregating Across Counties
 
-When pulling Census data at the county-level using `tidycensus`, we can only pull data for individual counties, as the package contains no way to aggregate values across a range of counties. In order to do this, we must pull the data in for each county of interest, then manually aggregate the values across the counties.
+When pulling Census data at the county-level using `tidycensus`, we can only pull data for individual counties as the package contains no way to aggregate values across a range of counties. In order to do this, we must pull the data in for each county of interest, then manually aggregate the values across the counties.
 
-> Note: The example included in this section works well for table DP05 and other tables containing count data; however, counts, medians, and rates require different methods to aggregate across counties and care should be taken to ensure the correct aggregation method is applied for the respective metrics
+> Note: The example included in this section works well for table DP05 and other tables containing count data; however, counts, medians, and rates require different methods to aggregate across counties and care should be taken to ensure the correct aggregation method is applied for the respective metrics.
 
 ### County Aggregation Example
 We begin by determining what our combined area of interest for the ACS data is and where it can be found. In this case, we are interested in results from the year of **2022** for the combined counties of **Charlottesville, VA and Albemarle, VA**. We define these variables below:
@@ -357,7 +357,7 @@ name <- "Charlottesville-Albermarle" # name of locality or combined region
 
 ```
 
-We use the `get_acs()` function from `tidycensus` to pull the example variable, **Race and Ethnicity [DP05]**. Here is the code that achieves this result:
+We use the `get_acs()` function from `tidycensus` to pull the example variable, **Race and Ethnicity from the ACS Demographic and Housing Characteristics tables [DP05]**. Here is the code that achieves this result:
 
 ```{r, echo=TRUE, eval=FALSE}
 # Create list mapping our variable
@@ -391,8 +391,8 @@ From there, call the `get_acs()` function. The arguments provided as function in
 - `county = ` this is provided with a vector list (in this case, called `county_codes`) of the FIPS codes for the counties we want to pull data from
 - `summary_var =` allows us to define the variable code for the summary statistics; by including totals, we can calculate percentages and proportions from the counts for each group
 - `year =` sets the time period of the survey we want the values from
-- `survey =` defines the type of ACS survey we are interested, here we want the 5-year ACS values (i.e. "acs5")
-- `key =` is where we provide the necessary Census API key need to make calls
+- `survey =` defines the type of ACS survey we are interested; here we want the 5-year ACS values (i.e. "acs5")
+- `key =` this is where we provide the necessary Census API key needed to make calls
 
 We can see the table output here:
 
