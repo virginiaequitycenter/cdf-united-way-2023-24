@@ -4,7 +4,7 @@
 ## This script can be used to create tables for ONE COUNTY or ONE COMBINED REGION (Example: Charlottesville-Albermarle)
 ## Data Request - THESE ARE FOR 2022 ACS 5-YEAR EST - TABLE CODES CAN BE DIFFERENT FOR DIFFERENT YEARS
 
-## County FIP codes
+## County FIPS codes
 # 003 -- Albemarle
 # 540 -- Charlottesville
 # 065 -- Fluvanna
