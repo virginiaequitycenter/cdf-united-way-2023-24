@@ -4,6 +4,29 @@
 ## This script can be used to create tables for ONE COUNTY or ONE COMBINED REGION (Example: Charlottesville-Albermarle)
 ## Data Request - THESE ARE FOR 2022 ACS 5-YEAR EST - TABLE CODES CAN BE DIFFERENT FOR DIFFERENT YEARS
 
+## County FIP codes
+# 003 -- Albemarle
+# 540 -- Charlottesville
+# 065 -- Fluvanna
+# 079 -- Greene
+# 109 -- Louisa
+# 125 -- Nelson
+# 790 -- Staunton
+# 015 -- Augusta
+# 820 -- Waynesboro
+# 660 -- Harrisonburg
+# 029 -- Buckingham
+# 137 -- Orange
+# 165 -- Rockingham
+# 113 -- Madison
+# 139 -- Page
+# 157 -- Rappahannock
+# 171 -- Shenandoah
+# 187 -- Warren
+# 840 -- Winchester
+# 043 -- Clarke
+# 069 -- Frederick
+
 # Packages
 library(tidyverse)
 library(tidycensus)
