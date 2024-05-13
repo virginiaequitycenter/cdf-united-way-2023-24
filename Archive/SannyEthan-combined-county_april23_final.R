@@ -1,11 +1,10 @@
 ## Tidycensus code for United Way Data
-## Authors: Ethan Assefa, Sanny Yang, Elizabeth Mitchell, Michele Claibourn 
-## Completed: 5/10/2024
+## Edits from original file made by Ethan and Sanny
 
 ## This script can be used to create tables for ONE COUNTY or ONE COMBINED REGION (Example: Charlottesville-Albermarle)
 ## Data Request - THESE ARE FOR 2022 ACS 5-YEAR EST - TABLE CODES CAN BE DIFFERENT FOR DIFFERENT YEARS
 
-## County FIPS codes
+## County FIP codes
 # 003 -- Albemarle
 # 540 -- Charlottesville
 # 065 -- Fluvanna
@@ -45,7 +44,7 @@ name <- "Charlottesville-Albermarle" # name of locality or combined region
 # Variable view helper
 all_acs_meta <- function(){
   # Gets the list of all variables from all acs5 metadata tables
-  vars1 <- load_variables(year, "acs5") %>% select(-geography)
+  vars1 <- load_variables(year, "acs5") %>% select(-geography) # Remove the geography column
   vars2 <- load_variables(year, "acs5/profile")
   vars3 <- load_variables(year, "acs5/subject")
   vars4 <- load_variables(year, "acs5/cprofile")
@@ -115,8 +114,9 @@ write.csv(acs_data_DP05_summarize, paste0(as.character(year), "-", name, "-DP05.
 # Using American Community Survey, 5-year estimates
 # Table B01001
 # American Community Survey table B01001A-I "Sex by Age, by Race"
+# https://www.socialexplorer.com/data/ACS2022_5yr/metadata/?ds=ACS22_5yr&table=B01001A
 
-# Black / African-American
+## black ----
 vars_B01001B <- c(popm_u5 = "B01001B_003", # Male under 5yrs
           popm_5to9 = "B01001B_004", # Male ages 5 to 9yrs
           popm_10to14 = "B01001B_005", # Male ages 10 to 14yrs
@@ -254,37 +254,16 @@ pop_child_nhwhite <- pop_child_nhwhite %>%
             sum_moe = moe_sum(moe = moe, estimate = estimate)) %>% 
   mutate(race_ethn = "u18_White")
 
-# Combine child_pop_race
+# Combine child_pop_race ----
 pop_child_race <- bind_rows(pop_child_black, pop_child_aian, 
                             pop_child_asian, pop_child_nhpi, 
                             pop_child_hisp, pop_child_nhwhite) 
 
-# Get totals from B01001 summary table, joined to the race/ethn specific tables to calculate proportions
-vars_B01001 <- c(popm_u5 = "B01001_003", 
-                  popm_5to9 = "B01001_004", 
-                  popm_10to14 = "B01001_005",
-                  popm_15to17 = "B01001_006",
-                  popf_u5 = "B01001_027", 
-                  popf_5to9 = "B01001_028", 
-                  popf_10to14 = "B01001_029",
-                  popf_15to17 = "B01001_030")
-
-pop_child_totals <- get_acs(geography = "county",
-                            state = "51",
-                            county = county_codes,
-                            var = vars_B01001,
-                            year = year,
-                            survey = "acs5")
-
-pop_child_totals <- pop_child_totals %>% 
+# NEEDS FIXING
+# Need to be reconsidered (See totals from B01001 tables)
+pop_child_race <- pop_child_race %>% 
   group_by(GEOID, NAME) %>% 
-  summarize(total_est = sum(estimate),
-            total_moe = moe_sum(moe = moe, estimate = estimate))
-
-# Join the totals from the summary tables to the race/ethn specpific tables by locality
-pop_child_race <- left_join(x = pop_child_race,
-                            y = pop_child_totals,
-                            by = c("GEOID", "NAME"))
+  mutate(total_count = sum(sum_est)) # this total count should come from a total of under 18, table B01001
 
 # Create summary variables for the combined counties
 # Run for single locality, will lead to no changes in the data table
@@ -292,11 +271,11 @@ pop_child_race_summarize <- pop_child_race %>%
   group_by(race_ethn) %>% 
   summarize(sum_est = sum(sum_est),
             sum_moe = moe_sum(moe = sum_moe, estimate = sum_est),
-            sum_total = sum(total_est))
+            sum_all = sum(total_count))
 
 # Create percentages from estimates
 pop_child_race_summarize <- pop_child_race_summarize %>% 
-  mutate(value = round(((sum_est / sum_total) * 100), digits = 2),
+  mutate(value = round(((sum_est / sum_all) * 100), digits = 2),
          name = name,
          variable = paste0("ChildPopRace_", race_ethn)) %>% 
   select(name, variable, value)
@@ -689,14 +668,33 @@ write.csv(acs_data_S2701_summarize, paste0(as.character(year), "-", name, "-S270
 # Use tables B27001A-I tables for age/race
 # https://censusreporter.org/tables/B27001/
 # This process will be similar to "Race and Ethnicity of Children % -- B01001A-I tables" above 
+# These are ACS 1-yr surveys, will need to adjust get_acs()
+
+# Variable view helper for ACS 1-year surveys
+#acs_var <- load_variables(year, "acs1", cache = TRUE)
+#view(acs_var)
 
 ############
-# DETERMINATION: cannot implement "children without health insurance" for local counties as is, 
-#                can pull for just Charlottesville MSA (metropolitan statistical areas)
+# PROBLEM: when pulling data, received NAs for all estimate and moe; warning stated "The 1-year ACS provides data for geographies with populations of 65,000 and greater."
 ############
 
+# MPC NOTE: yes, on data.census.gov it looks like for
+# B27001B - both values are 0
+# B27001C-B27001E - no results are found
+# B27001I - the first value is 0, the second is not
+# B27001H - both values are non-zero and returns the estimates
+# given Albemarle is the only locality for which ACS-1 estimates are available
+# and that the results for all subgroups except white are either 0 or missing
+# I don't think you can generate any useful information for this;
+# this is, though, partly a story of success -- the ACA and expansion
+# of medicaid (finally, in VA) has reduced the number of uninsured children
+# low enough for to be not easily estimable
+# and even among white-non-hispanic children, the estimated number 
+# without insurance is exceeded by the margin of error -- these are
+# very unstable estimates.
+
 ############
-#   NOTE: the final “value” calculated in this case is a count estimate and not a percentage, like some of the others.
+# DETERMINATION: cannot implement "children without health insurance" for local counties as is, can pull for just Charlottesville MSA (metropolitan statistical areas)
 ############
 
 # Function for pulling children without insurance by race for charlotteville metro statistical area (MSA)
@@ -762,71 +760,124 @@ child_NoHealthInsur_summarize <- pull_B27001_cvilleMSA(year, census_api)
 write.csv(child_NoHealthInsur_summarize, paste0(as.character(year), "-", name, "-B27001.csv"), row.names=FALSE) 
 
 #########################################################
-#### Unemployment Rate % -- S2301 ####
+#### Unemployment Rate % -- B23002, changed to S2301 ####
 #########################################################
+# Use tables B23002A-I tables for age/race
+# https://censusreporter.org/tables/B23002A/
+# This process will be similar to "Race and Ethnicity of Children % -- B01001A-I tables" above 
+# These are ACS 1-yr surveys, will need to adjust get_acs() (see above)
+# Only have data disaggregated by race and sex; need to bring in separate and group manually
 
-# These tables only have percents - will need to calculate counts then combine and create percent for combined counties
-var_S2301 <- list(
-  "Unemployment_%_Black" = "S2301_C04_013", # Black/AA
-  "Unemployment_%_AmerIndian" = "S2301_C04_014", # American Indian/Alaska Native
-  "Unemployment_%_Asian" = "S2301_C04_015", # Asian
-  "Unemployment_%_PacifIslan" = "S2301_C04_016", # Native Hawaiian/Pacific Islander
-  "Unemployment_%_HispanLatin" = "S2301_C04_019", # Hispanic/Latino (any race)
-  "Unemployment_%_White" = "S2301_C04_020" # White alone (not Hispanic/Latino)
-)
+############
+# PROBLEM: when pulling data, received NAs for all estimate and moe; warning stated "The 1-year ACS provides data for geographies with populations of 65,000 and greater."
+############
 
-var_S2301_sum <- list(
-  "Unemployment_%_Black" = "S2301_C01_013", # Black/AA
-  "Unemployment_%_AmerIndian" = "S2301_C01_014", # American Indian/Alaska Native
-  "Unemployment_%_Asian" = "S2301_C01_015", # Asian
-  "Unemployment_%_PacifIslan" = "S2301_C01_016", # Native Hawaiian/Pacific Islander
-  "Unemployment_%_HispanLatin" = "S2301_C01_019", # Hispanic/Latino (any race)
-  "Unemployment_%_White" = "S2301_C01_020" # White alone (not Hispanic/Latino)
-)
+# MPC NOTE: here again, it's only available for Albemarle and only for
+# white/white-non-hispanic (tables A and H); so probably not able to
+# generate the answers folks want.
+# There is a Charlottesville MSA (metropolitan statistical areas) version
+# available -- essentially for the whole region rather than by county
+# but only tables A/B/H (Black and white)
+# Actually, children without health insurance could also be pulled/provided
+# for the whole MSA as well, for tables A/B/D/H (again, some pretty 
+# large moe's relative to the estimates for several of these)
 
-# Get ACS data
-acs_data_S2301 <- get_acs(geography = "county",
-                          state = "VA",
-                          county = county_codes,
-                          variables = var_S2301,
-                          year = year, 
-                          survey = "acs5",
-                          key = census_api) 
+############
+# DETERMINATION: cannot implement "unemployment rate %" from the B23002, instead use Table S2301 to pull the % labor participation rate by race along with the total civilian population aged 16-64 by race
+############
 
-acs_data_S2301_sum <-  get_acs(geography = "county",
-                               state = "VA",
-                               county = county_codes,
-                               variables = var_S2301_sum,
-                               year = year, 
-                               survey = "acs5",
-                               key = census_api) 
+# Create function to generate unemployed counts based on labor participation rate estimates and total pop counts
+calculate_unemp_counts <- function(labor_rate, total_counts){
+  
+  # Calculate estimated employed count
+  employed_count = round(labor_rate * total_counts)
+  
+  # Calculate estimated unemployed count
+  unemployed_counts = total_counts - employed_count
+  
+  return(unemployed_counts)
+}
 
-acs_data_S2301 <- acs_data_S2301 %>% 
-  left_join(acs_data_S2301_sum %>% rename(summary_est = estimate,
-                                          summary_moe = moe),
-            by = c("GEOID", "NAME", "variable"))
+# Create function to generate unemployed moe counts based on labor participation rate moe and total pop counts
+calculate_moe_counts <- function(labor_moe, total_counts){
+  
+  # Calculate estimated count moe
+  moe_count = round((labor_moe/100) * total_counts)
+  
+  return(moe_count)
+}
 
-# When tables have PERCENTS use below
-acs_data_S2301_summarize <- acs_data_S2301 %>% 
-  mutate(estimate_count = (estimate / 100) * summary_est,
-         moe_count = (moe / 100) * summary_est)
+# Function for pulling all-age unemployment counts for the given race/ethnicity(s)
+pull_S2301 <- function(county_codes, year, census_api, name){
+  
+  # Mapping letter code in census for labor participation rate estimate to corresponding race/ethnicity group
+  racethn_laborpartic_map = list("Black" = "S2301_C02_013", 
+                                 "AmerIndian" = "S2301_C02_014", 
+                                 "Asian" = "S2301_C02_015", 
+                                 "PacifIslan" = "S2301_C02_016", 
+                                 "HispanLatin" = "S2301_C02_019", 
+                                 "White" = "S2301_C02_020")
+  
+  # Mapping letter code in census for total estimate to corresponding race/ethnicity group
+  racethn_totals_map = list("Black" = "S2301_C01_013", 
+                            "AmerIndian" = "S2301_C01_014", 
+                            "Asian" = "S2301_C01_015", 
+                            "PacifIslan" = "S2301_C02_016", 
+                            "HispanLatin" = "S2301_C01_019", 
+                            "White" = "S2301_C01_020")
 
-# Create summary variables for the combined counties
-acs_data_S2301_summarize <- acs_data_S2301_summarize %>% 
-  group_by(variable) %>% 
-  summarize(sum_est = sum(estimate_count),
-            sum_moe = moe_sum(moe = moe_count, estimate = estimate_count),
-            sum_all = sum(summary_est))
+  # Pulls data from acs
+  # For labor participation rate
+  laborpartic_tbl <- get_acs(geography = "county",
+                             state = "VA",
+                             county = county_codes,
+                             variables = racethn_laborpartic_map,
+                             year = year,
+                             survey = "acs5", 
+                             key = census_api)
+  # For totals
+  totals_tbl <- get_acs(geography = "county",
+                        state = "VA",
+                        county = county_codes,
+                        variables = racethn_totals_map,
+                        year = year,
+                        survey = "acs5", 
+                        key = census_api)
+  
+  # Joins the two tables together, providing both labor participation rate (relative prop.) and totals (absolute count)
+  joined_data <- inner_join(laborpartic_tbl, 
+                            totals_tbl %>% select(-GEOID), 
+                            by=c("NAME", "variable"),
+                            suffix = c("_laborpartic", "_totals"))
+  
+  # Takes joined table and calculates aggregated unemployed % by race using totals/rates
+  final_data <- joined_data %>%
+    # Provides the 
+    mutate(unemployed_count = calculate_unemp_counts(labor_rate = estimate_laborpartic, total_counts = estimate_totals),
+           unemployed_moe = calculate_moe_counts(labor_moe = moe_laborpartic, total_counts = estimate_totals)) %>% 
+    # Select variables of interest
+    select(GEOID, NAME, variable, unemployed_count, unemployed_moe, estimate_totals) %>% 
+    # Groups by race across counties
+    group_by(variable) %>% 
+    # Sums up unemployment counts and moe
+    summarize(sum_est = sum(unemployed_count),
+              sum_totals = sum(estimate_totals),
+              sum_moe = moe_sum(moe = unemployed_moe, estimate = unemployed_count)) %>% 
+    # Converts back to percentage, now aggregated
+    mutate(name = name,
+           variable = paste0("Unemploy_%_", variable),
+           value = round(sum_est/sum_totals, 4)*100,
+           moe = round(sum_moe/sum_totals, 4)*100) %>% 
+    # Selects only columns of interest, matching the naming convention for tables in script
+    select(name, variable, value)
+  
+  return(final_data)
+}
 
-# Create percentages from estimates
-acs_data_S2301_summarize <- acs_data_S2301_summarize %>% 
-  mutate(value = round(((sum_est / sum_all) * 100), digits = 2),
-         name = name) %>% 
-  select(name, variable, value)
-
+unemp_race_summarize <- pull_S2301(county_codes=county_codes, year=year, census_api=census_api, name=name)
 
 # Save table as csv
-write.csv(acs_data_S2301_summarize, paste0(as.character(year), "-", name, "-S2301.csv"), row.names=FALSE)
+write.csv(unemp_race_summarize, paste0(as.character(year), "-", name, "-S2301.csv"), row.names=FALSE)
 
 ####################################################
 #### Homeownership % -- S2502 ####
@@ -898,9 +949,8 @@ write.csv(acs_data_S2502_summarize, paste0(as.character(year), "-", name, "-S250
 
 # If tables are long
 acs_data_combined <- rbind(acs_data_DP05_summarize, pop_child_race_summarize, acs_data_S1701_summarize, median_HH_Incomes, 
-                           acs_data_S2701_summarize, child_NoHealthInsur_summarize, acs_data_S2301_summarize, 
+                           acs_data_S2701_summarize, child_NoHealthInsur_summarize, unemp_race_summarize, 
                            acs_data_S2502_summarize)
   
 # Save table as csv
 write.csv(acs_data_combined, paste0(as.character(year), "-", "acs-data-combined.csv"), row.names=FALSE)
-

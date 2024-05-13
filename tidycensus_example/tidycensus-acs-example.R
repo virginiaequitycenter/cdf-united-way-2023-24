@@ -88,7 +88,7 @@ library(tidycensus)
 # 2. Define localities, variables, pull tables ----
 
 # List of desired localities by FIPS
-ccode <- read_csv("county_codes.csv")
+ccode <- read_csv("tidycensus_example/county_codes.csv")
 region <- ccode$code # list of desired counties
 # - 003 Albemarle County  
 # - 540 Charlottesville
