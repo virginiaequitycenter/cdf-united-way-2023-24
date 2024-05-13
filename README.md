@@ -5,7 +5,7 @@ Final project script: [acs-county-data.R](https://github.com/virginiaequitycente
 
 ACS census data documentation: [https://virginiaequitycenter.github.io/cdf-united-way-2023-24/Documentation/combined-county-documentation.html](https://virginiaequitycenter.github.io/cdf-united-way-2023-24/Documentation/combined-county-documentation.html)
 
-Documentation files in /Documentation
+Documentation files in [Documentation/](https://github.com/virginiaequitycenter/cdf-united-way-2023-24/tree/main/Documentation)
 
-Draft project scripts in /Archive
+Draft project scripts in [Archive/](https://github.com/virginiaequitycenter/cdf-united-way-2023-24/tree/main/Archive)
 
